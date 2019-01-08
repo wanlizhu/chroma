@@ -31,11 +31,11 @@ TEST(StaticString, hash) {
     StaticString c("Hello World");
     StaticString d("Hello World!");
 
-    EXPECT_EQ(a.getHash(), b.getHash());
-    EXPECT_EQ(a.getHash(), d.getHash());
-    EXPECT_NE(a.getHash(), c.getHash());
-    EXPECT_NE(b.getHash(), c.getHash());
+    EXPECT_EQ(a.hash(), b.hash());
+    EXPECT_EQ(a.hash(), d.hash());
+    EXPECT_NE(a.hash(), c.hash());
+    EXPECT_NE(b.hash(), c.hash());
 
     std::hash<StaticString> ha;
-    EXPECT_EQ(ha(a), a.getHash());
+    EXPECT_EQ(ha(a), a.hash());
 }

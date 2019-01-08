@@ -223,7 +223,6 @@ TEST_F(QuatTest, ArithmeticFunc) {
     EXPECT_EQ(1_j, mat4(1_j).to_quaternion());
     EXPECT_EQ(1_k, mat4(1_k).to_quaternion());
 
-
     EXPECT_EQ(qr, log(exp(qr)));
 
     quat qq = qr * qr;

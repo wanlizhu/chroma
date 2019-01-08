@@ -186,6 +186,10 @@ public:
      * letting the compiler implicitly convert a scalar to a vector (assuming
      * the BASE<T> allows it).
      */
+    friend inline constexpr VECTOR<T> MATH_PURE operator *(T lv, const VECTOR<T>& rv) {
+        // don't pass lv by reference because we need a copy anyways
+        return VECTOR<T>(lv) *= rv;
+    }
     friend inline constexpr VECTOR<T> MATH_PURE operator *(VECTOR<T> lv, const VECTOR<T>& rv) {
         // don't pass lv by reference because we need a copy anyways
         return lv *= rv;

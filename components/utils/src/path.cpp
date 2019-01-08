@@ -1,24 +1,31 @@
 #include <utils/path.h>
-
 #include <sstream>
 #include <ostream>
 #include <iterator>
 #include <regex>
+#include <limits.h>
+#include <vector>
+#include <sys/stat.h>
 
-#if defined(WIN32) || defined(_WIN32)
+#if defined(WIN32)
 #   include <utils/compiler.h>
-#   include "win32/stdtypes.h"
+#   include <direct.h>
+#   include <Strsafe.h>
+#   include <stdlib.h>
+#   include <windows.h>
+#   include <shlwapi.h>
+#   include "stdtypes.h"
 #   define SEPARATOR '\\'
 #   define SEPARATOR_STR  "\\"
 #else
 #   include <unistd.h>
+#   include <dirent.h>
 #   define SEPARATOR '/'
 #   define SEPARATOR_STR "/"
+#   ifdef APPLE
+#       include <mach-o/dyld.h>
+#   endif
 #endif
-
-
-#include <limits.h>
-#include <sys/stat.h>
 
 namespace utils {
 
@@ -284,12 +291,146 @@ bool Path::unlink_file() {
     return ::unlink(m_path.c_str()) == 0;
 }
 
-} // namespace utils
+#ifdef WIN32
 
-#if defined(WIN32)
-#   include "win32/path.cpp.inc"
+bool Path::mkdir() const {
+    return _mkdir(m_path.c_str()) == 0;     
+}
+
+Path Path::current_executable() {
+    // First, need to establish resource path.
+    TCHAR path[MAX_PATH + 1];
+    Path result;
+
+    GetModuleFileName(NULL, path, MAX_PATH + 1);
+    result.set(path);
+
+    return result;
+}
+
+std::vector<Path> Path::list_contents() const {
+    // Return an empty vector if the path doesn't exist or is not a directory
+    if (!is_directory() || !exists()) {
+        return {};
+    }
+
+    TCHAR dirName[MAX_PATH];
+    StringCchCopy(dirName, MAX_PATH, c_str());
+
+    WIN32_FIND_DATA findData;
+    HANDLE find = FindFirstFile(dirName, &findData);
+
+    std::vector<Path> directory_contents;
+    do
+    {
+        if (findData.cFileName[0] != '.') {
+            directory_contents.push_back(concat(findData.cFileName));
+        }
+    } while (FindNextFile(find, &findData) != 0);
+
+    return directory_contents;
+}
+
+bool Path::is_absolute() const {
+    return !PathIsRelative(m_path.c_str());
+}
+
 #elif defined(LINUX)
-#   include "linux/path.cpp.inc"
-#elif defined(DARWIN)
-#   include "darwin/path.cpp.inc"
+
+bool Path::mkdir() const {
+    return ::mkdir(m_path.c_str(), S_IRUSR | S_IWUSR | S_IXUSR) == 0;
+}
+
+Path Path::current_executable() {
+    // First, need to establish resource path.
+    char exec_buf[2048];
+    Path result;
+
+    uint32_t buffer_size = sizeof(exec_buf)-1;
+    ssize_t sz = readlink("/proc/self/exe", exec_buf, buffer_size);
+    if (sz > 0) {
+        exec_buf[sz] = 0;
+        result.set(exec_buf);
+    }
+
+    return result;
+}
+
+std::vector<Path> Path::list_contents() const {
+    // Return an empty vector if the path doesn't exist or is not a directory
+    if (!is_directory() || !exists()) {
+        return {};
+    }
+
+    struct dirent* directory;
+    DIR* dir;
+
+    dir = opendir(c_str());
+    if (dir == nullptr) {
+        // Path does not exist or could not be read
+        return {};
+    }
+
+    std::vector<Path> directory_contents;
+
+    while ((directory = readdir(dir)) != nullptr) {
+        const char* file = directory->d_name;
+        if (file[0] != '.') {
+            directory_contents.push_back(concat(directory->d_name));
+        }
+    }
+
+    closedir(dir);
+    return directory_contents;
+}
+
+#elif defined(APPLE)
+
+bool Path::mkdir() const {
+    return ::mkdir(m_path.c_str(), S_IRUSR | S_IWUSR | S_IXUSR) == 0;
+}
+
+Path Path::current_executable() {
+    // First, need to establish resource path.
+    char exec_buf[2048];
+    Path result;
+
+    uint32_t buffer_size = sizeof(exec_buf);
+    if (_NSGetExecutablePath(exec_buf, &buffer_size) == 0) {
+        result.set(exec_buf);
+    }
+
+    return result;
+}
+
+std::vector<Path> Path::list_contents() const {
+    // Return an empty vector if the path doesn't exist or is not a directory
+    if (!is_directory() || !exists()) {
+        return {};
+    }
+
+    struct dirent* directory;
+    DIR* dir;
+
+    dir = opendir(c_str());
+    if (dir == nullptr) {
+        // Path does not exist or could not be read
+        return {};
+    }
+
+    std::vector<Path> directory_contents;
+
+    while ((directory = readdir(dir)) != nullptr) {
+        const char* file = directory->d_name;
+        if (file[0] != '.') {
+            directory_contents.push_back(concat(directory->d_name));
+        }
+    }
+
+    closedir(dir);
+    return directory_contents;
+}
+
 #endif
+
+} // namespace utils

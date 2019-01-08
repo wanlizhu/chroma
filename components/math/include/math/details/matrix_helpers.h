@@ -363,10 +363,10 @@ public:
     friend inline BASE<T> MATH_PURE inverse(const BASE<T>& matrix) {
         return matrix::inverse(matrix);
     }
-    friend inline constexpr BASE<T> MATH_PURE transpose(const BASE<T>& m) {
+    friend inline BASE<T> MATH_PURE transpose(const BASE<T>& m) {
         return matrix::transpose(m);
     }
-    friend inline constexpr T MATH_PURE trace(const BASE<T>& m) {
+    friend inline T MATH_PURE trace(const BASE<T>& m) {
         return matrix::trace(m);
     }
 };

@@ -43,19 +43,19 @@ SET(ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
 # ===============================================
 # General compiler flags
 # ===============================================
-SET(CXX_STANDARD "-std=c++14")
-SET(GC_SECTIONS "-Wl,--gc-sections")
-SET(B_SYMBOLIC_FUNCTIONS "-Wl,-Bsymbolic-functions")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD}")
 
 IF (WIN32)
     ADD_DEFINITIONS(/W0)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES=1 ${CXX_STANDARD}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWINDOWS")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES=1 /std:c++14")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
 ENDIF()
 
 IF (LINUX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLINUX")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++14")
     # To distribute our binaries, we must remove the dependency on libc++ and libgcc.
     IF (CMAKE_BUILD_TYPE STREQUAL "Release")
         LINK_LIBRARIES("-static-libgcc -static-libstdc++")
@@ -66,6 +66,7 @@ IF (APPLE)
     SET(GC_SECTIONS "-Wl,-dead_strip")
     SET(B_SYMBOLIC_FUNCTIONS "")
 
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAPPLE")
     # tell ranlib to ignore empty compilation units
     SET(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols <TARGET>")
     SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols <TARGET>")
