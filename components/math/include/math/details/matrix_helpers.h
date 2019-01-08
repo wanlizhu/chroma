@@ -35,7 +35,9 @@ inline constexpr float trace(float v) { return v; }
 inline constexpr double trace(double v) { return v; }
 
 template<typename MATRIX>
-MATRIX MATH_PURE gauss_jordan_inverse(const MATRIX& src) {
+MATH_PURE
+MATRIX 
+gauss_jordan_inverse(const MATRIX& src) {
     typedef typename MATRIX::value_type T;
     static constexpr unsigned int N = MATRIX::NUM_ROWS;
     MATRIX tmp(src);
@@ -82,7 +84,9 @@ MATRIX MATH_PURE gauss_jordan_inverse(const MATRIX& src) {
 
 // 2x2 matrix inverse is easy.
 template <typename MATRIX>
-MATRIX MATH_PURE fast_inverse2(const MATRIX& x) {
+MATH_PURE
+MATRIX 
+fast_inverse2(const MATRIX& x) {
     typedef typename MATRIX::value_type T;
 
     // Assuming the input matrix is:
@@ -115,7 +119,9 @@ MATRIX MATH_PURE fast_inverse2(const MATRIX& x) {
 // matrix inversion:
 // http://en.wikipedia.org/wiki/Invertible_matrix#Inversion_of_3.C3.973_matrices
 template <typename MATRIX>
-MATRIX MATH_PURE fast_inverse3(const MATRIX& x) {
+MATH_PURE
+MATRIX 
+fast_inverse3(const MATRIX& x) {
     typedef typename MATRIX::value_type T;
 
     // Assuming the input matrix is:
@@ -179,14 +185,10 @@ MATRIX MATH_PURE fast_inverse3(const MATRIX& x) {
 }
 
 
-/**
- * Inversion function which switches on the matrix size.
- * @warning This function assumes the matrix is invertible. The result is
- * undefined if it is not. It is the responsibility of the caller to
- * make sure the matrix is not singular.
- */
 template <typename MATRIX>
-inline constexpr MATRIX MATH_PURE inverse(const MATRIX& matrix) {
+inline constexpr MATH_PURE
+MATRIX 
+inverse(const MATRIX& matrix) {
     static_assert(MATRIX::NUM_ROWS == MATRIX::NUM_COLS, "only square matrices can be inverted");
     return (MATRIX::NUM_ROWS == 2) ? fast_inverse2<MATRIX>(matrix) :
         ((MATRIX::NUM_ROWS == 3) ? fast_inverse3<MATRIX>(matrix) :
@@ -194,7 +196,9 @@ inline constexpr MATRIX MATH_PURE inverse(const MATRIX& matrix) {
 }
 
 template<typename MATRIX_R, typename MATRIX_A, typename MATRIX_B>
-MATRIX_R MATH_PURE multiply(const MATRIX_A& lhs, const MATRIX_B& rhs) {
+MATH_PURE
+MATRIX_R 
+multiply(const MATRIX_A& lhs, const MATRIX_B& rhs) {
     // pre-requisite:
     //  lhs : D columns, R rows
     //  rhs : C columns, D rows
@@ -215,7 +219,9 @@ MATRIX_R MATH_PURE multiply(const MATRIX_A& lhs, const MATRIX_B& rhs) {
 }
 
 template <typename MATRIX>
-MATRIX MATH_PURE transpose(const MATRIX& m) {
+MATH_PURE
+MATRIX  
+transpose(const MATRIX& m) {
     // for now we only handle square matrix transpose
     static_assert(MATRIX::NUM_COLS == MATRIX::NUM_ROWS, "transpose only supports square matrices");
     MATRIX result(MATRIX::NO_INIT);
@@ -228,7 +234,9 @@ MATRIX MATH_PURE transpose(const MATRIX& m) {
 }
 
 template <typename MATRIX>
-typename MATRIX::value_type MATH_PURE trace(const MATRIX& m) {
+MATH_PURE
+typename MATRIX::value_type  
+trace(const MATRIX& m) {
     static_assert(MATRIX::NUM_COLS == MATRIX::NUM_ROWS, "trace only defined for square matrices");
     typename MATRIX::value_type result(0);
     for (size_t col = 0; col < MATRIX::NUM_COLS; ++col) {
@@ -238,7 +246,9 @@ typename MATRIX::value_type MATH_PURE trace(const MATRIX& m) {
 }
 
 template <typename MATRIX>
-typename MATRIX::col_type MATH_PURE diag(const MATRIX& m) {
+MATH_PURE
+typename MATRIX::col_type  
+diag(const MATRIX& m) {
     static_assert(MATRIX::NUM_COLS == MATRIX::NUM_ROWS, "diag only defined for square matrices");
     typename MATRIX::col_type result;
     for (size_t col = 0; col < MATRIX::NUM_COLS; ++col) {
@@ -249,7 +259,8 @@ typename MATRIX::col_type MATH_PURE diag(const MATRIX& m) {
 
 // This is taken from the Imath MatrixAlgo code, and is identical to Eigen.
 template <typename MATRIX>
-Quaternion<typename MATRIX::value_type> extract_quat(const MATRIX& mat) {
+Quaternion<typename MATRIX::value_type> 
+extract_quat(const MATRIX& mat) {
     typedef typename MATRIX::value_type T;
 
     Quaternion<T> quat(Quaternion<T>::NO_INIT);
@@ -294,19 +305,11 @@ Quaternion<typename MATRIX::value_type> extract_quat(const MATRIX& mat) {
 }  // namespace matrix
 
 
-/*
- * MatrixProductOperators implements basic arithmetic and basic compound assignments
- * operators on a vector of type BASE<T>.
- *
- * BASE only needs to implement operator[] and size().
- * By simply inheriting from MatrixProductOperators<BASE, T> BASE will automatically
- * get all the functionality here.
- */
 template <template<typename T> class BASE, typename T>
 class MatrixProductOperators {
 public:
-    // multiply by a scalar
-    BASE<T>& operator *= (T v) {
+    BASE<T>& 
+    operator*=(T v) {
         BASE<T>& lhs(static_cast<BASE<T>&>(*this));
         for (size_t col = 0; col < BASE<T>::NUM_COLS; ++col) {
             lhs[col] *= v;
@@ -315,13 +318,15 @@ public:
     }
 
     template<typename U>
-    const BASE<T>& operator *= (const BASE<U>& rhs) {
+    const BASE<T>& 
+    operator*=(const BASE<U>& rhs) {
         BASE<T>& lhs(static_cast<BASE<T>&>(*this));
         lhs = matrix::multiply<BASE<T> >(lhs, rhs);
         return lhs;
     }
 
-    BASE<T>& operator /= (T v) {
+    BASE<T>& 
+    operator/=(T v) {
         BASE<T>& lhs(static_cast<BASE<T>&>(*this));
         for (size_t col = 0; col < BASE<T>::NUM_COLS; ++col) {
             lhs[col] /= v;
@@ -330,7 +335,9 @@ public:
     }
 
     template<typename U>
-    friend BASE<T> MATH_PURE operator *(const BASE<T>& lhs, const BASE<U>& rhs) {
+    friend MATH_PURE
+    BASE<T>  
+    operator*(const BASE<T>& lhs, const BASE<U>& rhs) {
         return matrix::multiply<BASE<T> >(lhs, rhs);
     }
 };
@@ -345,28 +352,25 @@ public:
  *  - row_type
  *  - COL_SIZE
  *  - ROW_SIZE
- *
- * By simply inheriting from MatrixSquareFunctions<BASE, T> BASE will automatically
- * get all the functionality here.
  */
-
 template<template<typename U> class BASE, typename T>
 class MatrixSquareFunctions {
 public:
-    /*
-     * NOTE: the functions below ARE NOT member methods. They are friend functions
-     * with they definition inlined with their declaration. This makes these
-     * template functions available to the compiler when (and only when) this class
-     * is instantiated, at which point they're only templated on the 2nd parameter
-     * (the first one, BASE<T> being known).
-     */
-    friend inline BASE<T> MATH_PURE inverse(const BASE<T>& matrix) {
+    friend inline MATH_PURE 
+    BASE<T>
+    inverse(const BASE<T>& matrix) {
         return matrix::inverse(matrix);
     }
-    friend inline BASE<T> MATH_PURE transpose(const BASE<T>& m) {
+
+    friend inline MATH_PURE
+    BASE<T>
+    transpose(const BASE<T>& m) {
         return matrix::transpose(m);
     }
-    friend inline T MATH_PURE trace(const BASE<T>& m) {
+
+    friend inline MATH_PURE
+    T 
+    trace(const BASE<T>& m) {
         return matrix::trace(m);
     }
 };
@@ -381,21 +385,27 @@ public:
     constexpr inline size_t get_row_count() const { return BASE<T>::NUM_ROWS; }
     constexpr inline size_t size()  const { return BASE<T>::ROW_SIZE; }  // for Vector*<>
 
-    // array access
-    constexpr T const* as_array() const {
+    constexpr 
+    T const* 
+    as_array() const {
         return &static_cast<BASE<T> const &>(*this)[0][0];
     }
 
-    // element access
-    inline constexpr T const& operator()(size_t row, size_t col) const {
+    inline constexpr
+    T const&
+    operator()(size_t row, size_t col) const {
         return static_cast<BASE<T> const &>(*this)[col][row];
     }
 
-    inline T& operator()(size_t row, size_t col) {
+    inline 
+    T&
+    operator()(size_t row, size_t col) {
         return static_cast<BASE<T>&>(*this)[col][row];
     }
 
-    friend inline BASE<T> MATH_PURE abs(BASE<T> m) {
+    friend inline MATH_PURE
+    BASE<T>
+    abs(BASE<T> m) {
         for (size_t col = 0; col < BASE<T>::NUM_COLS; ++col) {
             m[col] = abs(m[col]);
         }
@@ -407,12 +417,15 @@ public:
 template<template<typename U> class BASE, typename T>
 class MatrixTransform {
 public:
-    inline constexpr MatrixTransform() {
+    inline constexpr 
+    MatrixTransform() {
         static_assert(BASE<T>::NUM_ROWS == 3 || BASE<T>::NUM_ROWS == 4, "3x3 or 4x4 matrices only");
     }
 
     template <typename A, typename VEC>
-    static BASE<T> rotate(A radian, const VEC& about) {
+    static 
+    BASE<T> 
+    rotate(A radian, const VEC& about) {
         BASE<T> r;
         T c = std::cos(radian);
         T s = std::sin(radian);
@@ -464,7 +477,9 @@ public:
         typename = typename std::enable_if<std::is_arithmetic<Y>::value >::type,
         typename = typename std::enable_if<std::is_arithmetic<P>::value >::type,
         typename = typename std::enable_if<std::is_arithmetic<R>::value >::type>
-        static BASE<T> euler_yxz(Y yaw, P pitch, R roll) {
+    static 
+    BASE<T> 
+    euler_yxz(Y yaw, P pitch, R roll) {
         return euler_zyx(roll, pitch, yaw);
     }
 
@@ -481,7 +496,9 @@ public:
         typename = typename std::enable_if<std::is_arithmetic<Y>::value >::type,
         typename = typename std::enable_if<std::is_arithmetic<P>::value >::type,
         typename = typename std::enable_if<std::is_arithmetic<R>::value >::type>
-        static BASE<T> euler_zyx(Y yaw, P pitch, R roll) {
+    static 
+    BASE<T>
+    euler_zyx(Y yaw, P pitch, R roll) {
         BASE<T> r;
         T cy = std::cos(yaw);
         T sy = std::sin(yaw);
@@ -521,7 +538,9 @@ public:
 template <template<typename T> class BASE, typename T>
 class MatrixDebug {
 public:
-    friend std::ostream& operator<<(std::ostream& stream, const BASE<T>& m) {
+    friend 
+    std::ostream& 
+    operator<<(std::ostream& stream, const BASE<T>& m) {
         for (size_t row = 0; row < BASE<T>::NUM_ROWS; ++row) {
             if (row != 0) {
                 stream << std::endl;

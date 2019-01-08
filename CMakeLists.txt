@@ -67,6 +67,7 @@ IF (APPLE)
     SET(B_SYMBOLIC_FUNCTIONS "")
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAPPLE")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
     # tell ranlib to ignore empty compilation units
     SET(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols <TARGET>")
     SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols <TARGET>")
