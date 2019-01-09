@@ -10,12 +10,7 @@
 namespace math {
 namespace details {
 
-/**
- * A 2x2 column-major matrix class.
- *
- * Conceptually a 2x2 matrix is a an array of 2 column vec2:
- */
-template <typename T>
+template<typename T>
 class MATH_EMPTY_BASES Matrix22 :
     public VectorUnaryOperators<Matrix22, T>,
     public VectorComparisonOperators<Matrix22, T>,
@@ -55,53 +50,63 @@ private:
     col_type m_value[NUM_COLS];
 
 public:
-    inline constexpr col_type const& operator[](size_t column) const {
-        // only possible in C++0x14 with constexpr
+    inline constexpr 
+    col_type const&
+    operator[](size_t column) const {
         assert(column < NUM_COLS);
         return m_value[column];
     }
-    inline col_type& operator[](size_t column) {
+    inline 
+    col_type& 
+    operator[](size_t column) {
         assert(column < NUM_COLS);
         return m_value[column];
     }
 
+    constexpr explicit 
+    Matrix22(no_init) {}
 
-    // leaves object uninitialized. use with caution.
-    constexpr explicit Matrix22(no_init) {}
-    // initialize to identity.
-    constexpr Matrix22();
-    // initialize to Identity*scalar.
+    constexpr 
+    Matrix22();
+
     template<typename U>
-    constexpr explicit Matrix22(U v);
-    // sets the diagonal to a vector.
-    template <typename U>
-    constexpr explicit Matrix22(const Vector2<U>& v);
-    // construct from another matrix of the same size
-    template <typename U>
-    constexpr explicit Matrix22(const Matrix22<U>& rhs);
-    // construct from 2 column vectors.
-    template <typename A, typename B>
-    constexpr Matrix22(const Vector2<A>& v0, const Vector2<B>& v1);
-    // construct from 4 elements in column-major form.
-    template <typename A, typename B, typename C, typename D>
-        constexpr explicit Matrix22(A m00, B m01,
-                                    C m10, D m11);
-    // row major initialize
+    constexpr explicit 
+    Matrix22(U v);
+    
+    template<typename U>
+    constexpr explicit
+    Matrix22(const Vector2<U>& v);
+
+    template<typename U>
+    constexpr explicit 
+    Matrix22(const Matrix22<U>& rhs);
+
+    template<typename A, typename B>
+    constexpr 
+    Matrix22(const Vector2<A>& v0, const Vector2<B>& v1);
+
+    template<typename A, typename B, typename C, typename D>
+    constexpr explicit 
+    Matrix22(A m00, B m01, C m10, D m11);
+
     struct row_major_init {
         template<typename A, typename B, typename C, typename D>
-            constexpr explicit row_major_init(A m00, B m01,
-                                              C m10, D m11) noexcept
-            : m(m00, m10,
-                m01, m11) {}
+        constexpr explicit 
+        row_major_init(A m00, B m01, C m10, D m11) noexcept
+            : m(m00, m10, m01, m11) {}
     private:
         friend Matrix22;
         Matrix22 m;
     };
-    constexpr explicit Matrix22(row_major_init c) : Matrix22(std::move(c.m)) { }
+    constexpr explicit 
+    Matrix22(row_major_init c) 
+        : Matrix22(std::move(c.m)) { }
 
 
     // rotate by radians in the 2D plane
-    static Matrix22<T> rotate(T radian) {
+    static 
+    Matrix22<T> 
+    rotate(T radian) {
         Matrix22<T> r(Matrix22<T>::NO_INIT);
         T c = std::cos(radian);
         T s = std::sin(radian);
@@ -113,115 +118,109 @@ public:
     // returns false if the two matrices are different. May return false if they're the same,
     // with some elements only differing by +0 or -0.
     // Behaviour is undefined with NaNs.
-    static constexpr bool fuzzy_equal(Matrix22 l, Matrix22 r) noexcept {
+    static constexpr 
+    bool
+    fuzzy_equal(Matrix22 l, Matrix22 r) noexcept {
         uint64_t const* const li = reinterpret_cast<uint64_t const*>(&l);
         uint64_t const* const ri = reinterpret_cast<uint64_t const*>(&r);
         uint64_t result = 0;
-        // for some reason clang is not able to vectoize this loop when the number of iteration
-        // is known and constant (!?!?!). Still this is better than operator==.
-    #pragma clang loop vectorize_width(2)
+
         for (size_t i = 0; i < sizeof(Matrix22) / sizeof(uint64_t); i++) {
             result |= li[i] ^ ri[i];
         }
         return result != 0;
     }
 
-    template <typename A>
-    static constexpr Matrix22 translate(const Vector2<A>& t) {
+    template<typename A>
+    static constexpr
+    Matrix22
+    translate(const Vector2<A>& t) {
         Matrix22 r;
         r[2] = t;
         return r;
     }
 
-    template <typename A>
-    static constexpr Matrix22 translate(A t) {
+    template<typename A>
+    static constexpr
+    Matrix22
+    translate(A t) {
         Matrix22 r;
         r[1] = Vector2<T>{ t };
         return r;
     }
 
-    template <typename A>
-    static constexpr Matrix22 scale(const Vector2<A>& s) {
+    template<typename A>
+    static constexpr
+    Matrix22
+    scale(const Vector2<A>& s) {
         return Matrix22{ s };
     }
 
-    template <typename A>
-    static constexpr Matrix22 scale(A s) {
+    template<typename A>
+    static constexpr 
+    Matrix22 
+    scale(A s) {
         return Matrix22{ Vector2<T>{ s, s } };
     }
 };
 
 
-// ----------------------------------------------------------------------------------------
-// Constructors
-// ----------------------------------------------------------------------------------------
-
 // Since the matrix code could become pretty big quickly, we don't inline most operations.
-template <typename T>
-constexpr Matrix22<T>::Matrix22() {
+template<typename T>
+constexpr 
+Matrix22<T>::Matrix22() {
     m_value[0] = col_type(1, 0);
     m_value[1] = col_type(0, 1);
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix22<T>::Matrix22(U v) {
+template<typename T>
+template<typename U>
+constexpr 
+Matrix22<T>::Matrix22(U v) {
     m_value[0] = col_type(v, 0);
     m_value[1] = col_type(0, v);
 }
 
 template<typename T>
 template<typename U>
-constexpr Matrix22<T>::Matrix22(const Vector2<U>& v) {
+constexpr 
+Matrix22<T>::Matrix22(const Vector2<U>& v) {
     m_value[0] = col_type(v.x, 0);
     m_value[1] = col_type(0, v.y);
 }
 
-// construct from 4 scalars. Note that the arrangement
-// of values in the constructor is the transpose of the matrix
-// notation.
+// Note that the arrangement of values in the constructor is the transpose of the matrix notation.
 template<typename T>
-template <typename A, typename B, typename C, typename D>
-    constexpr Matrix22<T>::Matrix22(A m00, B m01,
-                                    C m10, D m11) {
+template<typename A, typename B, typename C, typename D>
+constexpr
+Matrix22<T>::Matrix22(A m00, B m01, C m10, D m11) {
     m_value[0] = col_type(m00, m01);
     m_value[1] = col_type(m10, m11);
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix22<T>::Matrix22(const Matrix22<U>& rhs) {
+template<typename T>
+template<typename U>
+constexpr 
+Matrix22<T>::Matrix22(const Matrix22<U>& rhs) {
     for (size_t col = 0; col < NUM_COLS; ++col) {
         m_value[col] = col_type(rhs[col]);
     }
 }
 
-// Construct from 2 column vectors.
-template <typename T>
-template <typename A, typename B>
-constexpr Matrix22<T>::Matrix22(const Vector2<A>& v0, const Vector2<B>& v1) {
+template<typename T>
+template<typename A, typename B>
+constexpr
+Matrix22<T>::Matrix22(const Vector2<A>& v0, const Vector2<B>& v1) {
     m_value[0] = v0;
     m_value[1] = v1;
 }
 
-
-// ----------------------------------------------------------------------------------------
-// Arithmetic operators outside of class
-// ----------------------------------------------------------------------------------------
-
-/* We use non-friend functions here to prevent the compiler from using
- * implicit conversions, for instance of a scalar to a vector. The result would
- * not be what the caller expects.
- *
- * Also note that the order of the arguments in the inner loop is important since
- * it determines the output type (only relevant when T != U).
- */
-
  // matrix * column-vector, result is a vector of the same type than the input vector
-template <typename T, typename U>
-constexpr typename Matrix22<U>::col_type MATH_PURE 
-operator *(const Matrix22<T>& lhs, const Vector2<U>& rhs) {
-    // Result is initialized to zero.
+template<typename T, typename U>
+constexpr MATH_PURE
+typename Matrix22<U>::col_type  
+operator*(const Matrix22<T>& lhs, const Vector2<U>& rhs) {
+    // result is initialized to zero.
     typename Matrix22<U>::col_type result = {};
     for (size_t col = 0; col < Matrix22<T>::NUM_COLS; ++col) {
         result += lhs[col] * rhs[col];
@@ -230,9 +229,10 @@ operator *(const Matrix22<T>& lhs, const Vector2<U>& rhs) {
 }
 
 // row-vector * matrix, result is a vector of the same type than the input vector
-template <typename T, typename U>
-constexpr typename Matrix22<U>::row_type MATH_PURE 
-operator *(const Vector2<U>& lhs, const Matrix22<T>& rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename Matrix22<U>::row_type  
+operator*(const Vector2<U>& lhs, const Matrix22<T>& rhs) {
     typename Matrix22<U>::row_type result;
     for (size_t col = 0; col < Matrix22<T>::NUM_COLS; ++col) {
         result[col] = dot(lhs, rhs[col]);
@@ -242,23 +242,26 @@ operator *(const Vector2<U>& lhs, const Matrix22<T>& rhs) {
 
 // matrix * scalar, result is a matrix of the same type than the input matrix
 template<typename T, typename U>
-constexpr typename std::enable_if<std::is_arithmetic<U>::value, Matrix22<T>>::type MATH_PURE
+constexpr MATH_PURE
+typename std::enable_if<std::is_arithmetic<U>::value, Matrix22<T>>::type 
 operator*(Matrix22<T> lhs, U rhs) {
     return lhs *= rhs;
 }
 
 // scalar * matrix, result is a matrix of the same type than the input matrix
 template<typename T, typename U>
-constexpr typename std::enable_if<std::is_arithmetic<U>::value, Matrix22<T>>::type MATH_PURE
+constexpr MATH_PURE
+typename std::enable_if<std::is_arithmetic<U>::value, Matrix22<T>>::type 
 operator*(U lhs, const Matrix22<T>& rhs) {
     return rhs * lhs;
 }
 
-/* FIXME: this should go into MatrixSquareFunctions<> but for some reason
- * BASE<T>::col_type is not accessible from there (???)
- */
+// FIXME: this should go into MatrixSquareFunctions<> but for some reason
+// BASE<T>::col_type is not accessible from there (???)
 template<typename T>
-constexpr typename Matrix22<T>::col_type MATH_PURE diag(const Matrix22<T>& m) {
+constexpr MATH_PURE
+typename Matrix22<T>::col_type  
+diag(const Matrix22<T>& m) {
     return matrix::diag(m);
 }
 
@@ -272,17 +275,13 @@ typedef details::Matrix22<float> mat2f;
 
 namespace std {
 
-template <typename T>
-constexpr void swap(math::details::Matrix22<T>& lhs, math::details::Matrix22<T>& rhs) noexcept {
-    // This generates much better code than the default implementation
-    // It's unclear why, I believe this is due to an optimization bug in the clang.
-    //
+template<typename T>
+constexpr 
+void
+swap(math::details::Matrix22<T>& lhs, math::details::Matrix22<T>& rhs) noexcept {
     //    math::details::Matrix22<T> t(lhs);
     //    lhs = rhs;
     //    rhs = t;
-    //
-    // clang always copy lhs on the stack, even if it's never using it (it's using the
-    // copy it has in registers).
 
     const T t00 = lhs[0][0];
     const T t01 = lhs[0][1];

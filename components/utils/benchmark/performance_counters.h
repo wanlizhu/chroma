@@ -18,12 +18,12 @@ public:
     }
     ~PerformanceCounters() {
         profiler.stop();
-        counters = profiler.readCounters();
+        counters = profiler.read_counters();
         if (profiler.is_valid()) {
             state.counters.insert({
-                    { "C",   { (double)counters.getCpuCycles(),    benchmark::Counter::kAvgIterations }},
-                    { "I",   { (double)counters.getInstructions(), benchmark::Counter::kAvgIterations }},
-                    { "BPU", { (double)counters.getBranchMisses(), benchmark::Counter::kAvgIterations }},
+                    { "C",   { (double)counters.get_cpu_cycles(),    benchmark::Counter::kAvgIterations }},
+                    { "I",   { (double)counters.get_instructions(), benchmark::Counter::kAvgIterations }},
+                    { "BPU", { (double)counters.get_branch_misses(), benchmark::Counter::kAvgIterations }},
                     { "CPI", { (double)counters.getCPI(),          benchmark::Counter::kAvgThreads }},
             });
         }

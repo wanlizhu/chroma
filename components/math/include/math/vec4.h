@@ -46,36 +46,52 @@ public:
         };
     };
 
-    inline constexpr size_type size() const { return SIZE; }
-    inline constexpr T const& operator[](size_t i) const {
-        // only possible in C++0x14 with constexpr
-        assert(i < SIZE);
-        return v[i];
+    inline constexpr 
+    size_type
+    size() const {
+        return SIZE;
     }
-    inline constexpr T& operator[](size_t i) {
+
+    inline constexpr
+    T const&
+    operator[](size_t i) const {
         assert(i < SIZE);
         return v[i];
     }
 
+    inline constexpr
+    T&
+    operator[](size_t i) {
+        assert(i < SIZE);
+        return v[i];
+    }
 
-    // default constructor
     constexpr Vector4() = default;
 
-    // handles implicit conversion to a tvec4. must not be explicit.
     template<typename A, typename = typename std::enable_if<std::is_arithmetic<A>::value >::type>
-    constexpr Vector4(A v) : x(v), y(v), z(v), w(v) { }
+    constexpr 
+    Vector4(A v) 
+        : x(v), y(v), z(v), w(v) {}
 
     template<typename A, typename B, typename C, typename D>
-    constexpr Vector4(A x, B y, C z, D w) : x(x), y(y), z(z), w(w) { }
+    constexpr
+    Vector4(A x, B y, C z, D w)
+        : x(x), y(y), z(z), w(w) {}
 
     template<typename A, typename B, typename C>
-    constexpr Vector4(const Vector2<A>& v, B z, C w) : x(v.x), y(v.y), z(z), w(w) { }
+    constexpr 
+    Vector4(const Vector2<A>& v, B z, C w)
+        : x(v.x), y(v.y), z(z), w(w) {}
 
     template<typename A, typename B>
-    constexpr Vector4(const Vector3<A>& v, B w) : x(v.x), y(v.y), z(v.z), w(w) { }
+    constexpr 
+    Vector4(const Vector3<A>& v, B w)
+        : x(v.x), y(v.y), z(v.z), w(w) {}
 
     template<typename A>
-    explicit constexpr Vector4(const Vector4<A>& v) : x(v.x), y(v.y), z(v.z), w(v.w) { }
+    explicit constexpr
+    Vector4(const Vector4<A>& v) 
+        : x(v.x), y(v.y), z(v.z), w(v.w) {}
 };
 
 }  // namespace details

@@ -308,7 +308,7 @@ Path Path::current_executable() {
     return result;
 }
 
-std::vector<Path> Path::list_contents() const {
+std::vector<Path> Path::list() const {
     // Return an empty vector if the path doesn't exist or is not a directory
     if (!is_directory() || !exists()) {
         return {};
@@ -356,7 +356,7 @@ Path Path::current_executable() {
     return result;
 }
 
-std::vector<Path> Path::list_contents() const {
+std::vector<Path> Path::list() const {
     // Return an empty vector if the path doesn't exist or is not a directory
     if (!is_directory() || !exists()) {
         return {};
@@ -403,7 +403,7 @@ Path Path::current_executable() {
     return result;
 }
 
-std::vector<Path> Path::list_contents() const {
+std::vector<Path> Path::list() const {
     // Return an empty vector if the path doesn't exist or is not a directory
     if (!is_directory() || !exists()) {
         return {};

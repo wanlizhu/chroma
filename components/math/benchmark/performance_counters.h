@@ -23,13 +23,13 @@ public:
 
     ~PerformanceCounters() {
         profiler.stop();
-        counters = profiler.readCounters();
+        counters = profiler.read_counters();
         if (profiler.is_valid()) {
             auto avgItem = double(state.iterations()) / state.items_processed();
             state.counters.insert({
-                    { "C",   { avgItem * (double)counters.getCpuCycles(),    benchmark::Counter::kAvgIterations }},
-                    { "I",   { avgItem * (double)counters.getInstructions(), benchmark::Counter::kAvgIterations }},
-                    { "BPU", { std::floor(0.5 + avgItem * (double)counters.getBranchMisses() / state.iterations()), benchmark::Counter::kDefaults }},
+                    { "C",   { avgItem * (double)counters.get_cpu_cycles(),    benchmark::Counter::kAvgIterations }},
+                    { "I",   { avgItem * (double)counters.get_instructions(), benchmark::Counter::kAvgIterations }},
+                    { "BPU", { std::floor(0.5 + avgItem * (double)counters.get_branch_misses() / state.iterations()), benchmark::Counter::kDefaults }},
                     { "CPI", {           (double)counters.getCPI(),          benchmark::Counter::kAvgThreads }},
             });
         }

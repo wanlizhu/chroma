@@ -10,13 +10,14 @@
 #include <math.h>
 #include <stdint.h>
 #include <sys/types.h>
-
 #include <cmath>
 #include <functional>
 #include <limits>
 #include <iostream>
-
+#include <numeric>
+#include <limits>
 #include "compiler.h"
+#include "../scalar.h"
 
 namespace math {
 namespace details {
@@ -160,12 +161,12 @@ public:
     }
     friend inline constexpr MATH_PURE
     VECTOR<T>  
-    operator *(VECTOR<T> lv, const VECTOR<T>& rv) {
+    operator*(VECTOR<T> lv, const VECTOR<T>& rv) {
         return lv *= rv;
     }
     friend inline constexpr MATH_PURE
     VECTOR<T>  
-    operator /(VECTOR<T> lv, const VECTOR<T>& rv) {
+    operator/(VECTOR<T> lv, const VECTOR<T>& rv) {
         return lv /= rv;
     }
 };
@@ -196,7 +197,7 @@ public:
         // w/ inlining we end-up with many branches that will pollute the BPU cache
         MATH_NOUNROLL
         for (size_t i = 0; i < lv.size(); i++){
-            if (lv[i] != rv[i]) {
+            if (!equivalent(lv[i], rv[i])) {
                 return false;
             }
         }
@@ -207,7 +208,7 @@ public:
     friend inline MATH_PURE
     bool  
     operator!=(const VECTOR<T>& lv, const VECTOR<RT>& rv) {
-        return !operator ==(lv, rv);
+        return !operator==(lv, rv);
     }
 
     template<typename RT>
@@ -246,7 +247,7 @@ public:
     template<typename RT>
     friend inline constexpr MATH_PURE
     bool 
-    operator >=(const VECTOR<T>& lv, const VECTOR<RT>& rv) {
+    operator>=(const VECTOR<T>& lv, const VECTOR<RT>& rv) {
         return !(lv < rv);
     }
 

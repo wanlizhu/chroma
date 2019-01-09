@@ -45,7 +45,7 @@ int StaticString::compare(const StaticString& rhs) const noexcept {
     return strncmp(data(), rhs.data(), size());
 }
 
-UTILS_NOINLINE
+//UTILS_NOINLINE
 CString::CString(const char* cstr, size_type length) {
     if (length && cstr) {
         // assert(length == strlen(cstr));

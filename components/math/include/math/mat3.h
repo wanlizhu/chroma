@@ -5,7 +5,6 @@
 #include "details/matrix_helpers.h"
 #include "vec3.h"
 #include "details/compiler.h"
-
 #include <limits.h>
 #include <stdint.h>
 #include <sys/types.h>
@@ -13,12 +12,7 @@
 namespace math {
 namespace details {
 
-/**
- * A 3x3 column-major matrix class.
- *
- * Conceptually a 3x3 matrix is a an array of 3 column vec3:
- */
-template <typename T>
+template<typename T>
 class MATH_EMPTY_BASES Matrix33 :
     public VectorUnaryOperators<Matrix33, T>,
     public VectorComparisonOperators<Matrix33, T>,
@@ -59,48 +53,58 @@ private:
     col_type m_value[NUM_COLS];
 
 public:
-    inline constexpr col_type const& operator[](size_t column) const {
-        // only possible in C++0x14 with constexpr
-        assert(column < NUM_COLS);
-        return m_value[column];
-    }
-    inline constexpr col_type& operator[](size_t column) {
+    inline constexpr 
+    col_type const&
+    operator[](size_t column) const {
         assert(column < NUM_COLS);
         return m_value[column];
     }
 
+    inline constexpr
+    col_type&
+    operator[](size_t column) {
+        assert(column < NUM_COLS);
+        return m_value[column];
+    }
 
-    // leaves object uninitialized. use with caution.
-    constexpr explicit Matrix33(no_init) {}
-    // initialize to identity.
-    constexpr Matrix33();
-    // initialize to Identity*scalar.
+    constexpr explicit 
+    Matrix33(no_init) {}
+    
+    constexpr
+    Matrix33();
+    
     template<typename U>
-    constexpr explicit Matrix33(U v);
-    // sets the diagonal to a vector.
-    template <typename U>
-    constexpr explicit Matrix33(const Vector3<U>& v);
-    // construct from another matrix of the same size.
-    template <typename U>
-    constexpr explicit Matrix33(const Matrix33<U>& rhs);
-    // construct from 3 column vectors.
-    template <typename A, typename B, typename C>
-    constexpr Matrix33(const Vector3<A>& v0, const Vector3<B>& v1, const Vector3<C>& v2);
-    // construct from 9 elements in column-major form.
-    template <typename A, typename B, typename C,
-        typename D, typename E, typename F,
-        typename G, typename H, typename I>
-        constexpr explicit Matrix33(A m00, B m01, C m02,
-                                    D m10, E m11, F m12,
-                                    G m20, H m21, I m22);
-    // row major initialize.
+    constexpr explicit
+    Matrix33(U v);
+    
+    template<typename U>
+    constexpr explicit
+    Matrix33(const Vector3<U>& v);
+    
+    template<typename U>
+    constexpr explicit 
+    Matrix33(const Matrix33<U>& rhs);
+    
+    template<typename A, typename B, typename C>
+    constexpr
+    Matrix33(const Vector3<A>& v0, const Vector3<B>& v1, const Vector3<C>& v2);
+    
+    template<typename A, typename B, typename C,
+              typename D, typename E, typename F,
+              typename G, typename H, typename I>
+    constexpr explicit
+    Matrix33(A m00, B m01, C m02,
+             D m10, E m11, F m12,
+             G m20, H m21, I m22);
+
     struct row_major_init {
         template<typename A, typename B, typename C,
-            typename D, typename E, typename F,
-            typename G, typename H, typename I>
-            constexpr explicit row_major_init(A m00, B m01, C m02,
-                                              D m10, E m11, F m12,
-                                              G m20, H m21, I m22) noexcept
+                 typename D, typename E, typename F,
+                 typename G, typename H, typename I>
+        constexpr explicit 
+        row_major_init(A m00, B m01, C m02,
+                       D m10, E m11, F m12,
+                       G m20, H m21, I m22) noexcept
             : m(m00, m10, m20,
                 m01, m11, m21,
                 m02, m12, m22) {}
@@ -108,15 +112,18 @@ public:
         friend Matrix33;
         Matrix33 m;
     };
-    constexpr explicit Matrix33(row_major_init c) : Matrix33(std::move(c.m)) { }
-    // construct from a quaternion.
-    template <typename U>
-    constexpr explicit Matrix33(const Quaternion<U>& q);
+    constexpr explicit
+    Matrix33(row_major_init c)
+        : Matrix33(std::move(c.m)) { }
+    
+    template<typename U>
+    constexpr explicit
+    Matrix33(const Quaternion<U>& q);
 
 
     // orthogonalize only works on matrices of size 3x3.
-    friend inline
-        constexpr Matrix33 orthogonalize(const Matrix33& m) {
+    friend inline constexpr
+    Matrix33 orthogonalize(const Matrix33& m) {
         Matrix33 ret(Matrix33::NO_INIT);
         ret[0] = normalize(m[0]);
         ret[2] = normalize(cross(ret[0], m[1]));
@@ -133,50 +140,55 @@ public:
      * to 2 bytes, making the resulting quaternion suitable for storage into an SNORM16
      * vector.
      */
-    static constexpr Quaternion<T> pack_tangent_frame(const Matrix33& m, size_t storageSize = sizeof(int16_t));
+    static constexpr 
+    Quaternion<T> 
+    pack_tangent_frame(const Matrix33& m, size_t storageSize = sizeof(int16_t));
 
-    template <typename A>
-    static constexpr Matrix33 translate(const Vector3<A>& t) {
+    template<typename A>
+    static constexpr 
+    Matrix33
+    translate(const Vector3<A>& t) {
         Matrix33 r;
         r[2] = t;
         return r;
     }
 
-    template <typename A>
-    static constexpr Matrix33 translate(A t) {
+    template<typename A>
+    static constexpr
+    Matrix33
+    translate(A t) {
         Matrix33 r;
         r[2] = Vector3<T>{ t };
         return r;
     }
 
-    template <typename A>
-    static constexpr Matrix33 scale(const Vector3<A>& s) {
+    template<typename A>
+    static constexpr
+    Matrix33 
+    scale(const Vector3<A>& s) {
         return Matrix33{ s };
     }
 
-    template <typename A>
-    static constexpr Matrix33 scale(A s) {
+    template<typename A>
+    static constexpr 
+    Matrix33
+    scale(A s) {
         return Matrix33{ Vector3<T>{ s } };
     }
 };
 
-
-// ----------------------------------------------------------------------------------------
-// Constructors
-// ----------------------------------------------------------------------------------------
-
-// Since the matrix code could become pretty big quickly, we don't inline most
-// operations.
-template <typename T>
-constexpr Matrix33<T>::Matrix33() {
+template<typename T>
+constexpr
+Matrix33<T>::Matrix33() {
     m_value[0] = col_type(1, 0, 0);
     m_value[1] = col_type(0, 1, 0);
     m_value[2] = col_type(0, 0, 1);
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix33<T>::Matrix33(U v) {
+template<typename T>
+template<typename U>
+constexpr 
+Matrix33<T>::Matrix33(U v) {
     m_value[0] = col_type(v, 0, 0);
     m_value[1] = col_type(0, v, 0);
     m_value[2] = col_type(0, 0, v);
@@ -184,47 +196,48 @@ constexpr Matrix33<T>::Matrix33(U v) {
 
 template<typename T>
 template<typename U>
-constexpr Matrix33<T>::Matrix33(const Vector3<U>& v) {
+constexpr
+Matrix33<T>::Matrix33(const Vector3<U>& v) {
     m_value[0] = col_type(v.x, 0, 0);
     m_value[1] = col_type(0, v.y, 0);
     m_value[2] = col_type(0, 0, v.z);
 }
 
-// construct from 16 scalars. Note that the arrangement
-// of values in the constructor is the transpose of the matrix
-// notation.
 template<typename T>
-template <typename A, typename B, typename C,
-    typename D, typename E, typename F,
-    typename G, typename H, typename I>
-    constexpr Matrix33<T>::Matrix33(A m00, B m01, C m02,
-                                    D m10, E m11, F m12,
-                                    G m20, H m21, I m22) {
+template<typename A, typename B, typename C,
+          typename D, typename E, typename F,
+          typename G, typename H, typename I>
+constexpr 
+Matrix33<T>::Matrix33(A m00, B m01, C m02,
+                      D m10, E m11, F m12,
+                      G m20, H m21, I m22) {
     m_value[0] = col_type(m00, m01, m02);
     m_value[1] = col_type(m10, m11, m12);
     m_value[2] = col_type(m20, m21, m22);
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix33<T>::Matrix33(const Matrix33<U>& rhs) {
+template<typename T>
+template<typename U>
+constexpr 
+Matrix33<T>::Matrix33(const Matrix33<U>& rhs) {
     for (size_t col = 0; col < NUM_COLS; ++col) {
         m_value[col] = col_type(rhs[col]);
     }
 }
 
-// Construct from 3 column vectors.
-template <typename T>
-template <typename A, typename B, typename C>
-constexpr Matrix33<T>::Matrix33(const Vector3<A>& v0, const Vector3<B>& v1, const Vector3<C>& v2) {
+template<typename T>
+template<typename A, typename B, typename C>
+constexpr 
+Matrix33<T>::Matrix33(const Vector3<A>& v0, const Vector3<B>& v1, const Vector3<C>& v2) {
     m_value[0] = v0;
     m_value[1] = v1;
     m_value[2] = v2;
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix33<T>::Matrix33(const Quaternion<U>& q) {
+template<typename T>
+template<typename U>
+constexpr 
+Matrix33<T>::Matrix33(const Quaternion<U>& q) {
     const U n = q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w;
     const U s = n > 0 ? 2 / n : 0;
     const U x = s * q.x;
@@ -244,23 +257,11 @@ constexpr Matrix33<T>::Matrix33(const Quaternion<U>& q) {
     m_value[2] = col_type(xz + yw, yz - xw, 1 - xx - yy);  // NOLINT
 }
 
-
-// ----------------------------------------------------------------------------------------
-// Arithmetic operators outside of class
-// ----------------------------------------------------------------------------------------
-
-/* We use non-friend functions here to prevent the compiler from using
- * implicit conversions, for instance of a scalar to a vector. The result would
- * not be what the caller expects.
- *
- * Also note that the order of the arguments in the inner loop is important since
- * it determines the output type (only relevant when T != U).
- */
-
  // matrix * column-vector, result is a vector of the same type than the input vector
-template <typename T, typename U>
-constexpr typename Matrix33<U>::col_type MATH_PURE 
-operator *(const Matrix33<T>& lhs, const Vector3<U>& rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename Matrix33<U>::col_type  
+operator*(const Matrix33<T>& lhs, const Vector3<U>& rhs) {
     // Result is initialized to zero.
     typename Matrix33<U>::col_type result = {};
     for (size_t col = 0; col < Matrix33<T>::NUM_COLS; ++col) {
@@ -270,9 +271,10 @@ operator *(const Matrix33<T>& lhs, const Vector3<U>& rhs) {
 }
 
 // row-vector * matrix, result is a vector of the same type than the input vector
-template <typename T, typename U>
-constexpr typename Matrix33<U>::row_type MATH_PURE 
-operator *(const Vector3<U>& lhs, const Matrix33<T>& rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename Matrix33<U>::row_type  
+operator*(const Vector3<U>& lhs, const Matrix33<T>& rhs) {
     typename Matrix33<U>::row_type result;
     for (size_t col = 0; col < Matrix33<T>::NUM_COLS; ++col) {
         result[col] = dot(lhs, rhs[col]);
@@ -282,21 +284,25 @@ operator *(const Vector3<U>& lhs, const Matrix33<T>& rhs) {
 
 // matrix * scalar, result is a matrix of the same type than the input matrix
 template<typename T, typename U>
-constexpr typename std::enable_if<std::is_arithmetic<U>::value, Matrix33<T>>::type MATH_PURE
+constexpr MATH_PURE
+typename std::enable_if<std::is_arithmetic<U>::value, Matrix33<T>>::type 
 operator*(Matrix33<T> lhs, U rhs) {
     return lhs *= rhs;
 }
 
 // scalar * matrix, result is a matrix of the same type than the input matrix
 template<typename T, typename U>
-constexpr typename std::enable_if<std::is_arithmetic<U>::value, Matrix33<T>>::type MATH_PURE
+constexpr MATH_PURE
+typename std::enable_if<std::is_arithmetic<U>::value, Matrix33<T>>::type 
 operator*(U lhs, const Matrix33<T>& rhs) {
     return rhs * lhs;
 }
 
 
 template<typename T>
-constexpr Quaternion<T> Matrix33<T>::pack_tangent_frame(const Matrix33<T>& m, size_t storageSize) {
+constexpr 
+Quaternion<T>
+Matrix33<T>::pack_tangent_frame(const Matrix33<T>& m, size_t storageSize) {
     Quaternion<T> q = Matrix33<T>{ m[0], cross(m[2], m[0]), m[2] }.to_quaternion();
     q = positive(normalize(q));
 
@@ -318,11 +324,9 @@ constexpr Quaternion<T> Matrix33<T>::pack_tangent_frame(const Matrix33<T>& m, si
     return q;
 }
 
-/* FIXME: this should go into TMatSquareFunctions<> but for some reason
- * BASE<T>::col_type is not accessible from there (???)
- */
 template<typename T>
-constexpr typename Matrix33<T>::col_type MATH_PURE 
+constexpr MATH_PURE
+typename Matrix33<T>::col_type  
 diag(const Matrix33<T>& m) {
     return matrix::diag(m);
 }
@@ -338,18 +342,10 @@ typedef details::Matrix33<float> mat3f;
 
 namespace std {
 
-template <typename T>
-constexpr void swap(math::details::Matrix33<T>& lhs, math::details::Matrix33<T>& rhs) noexcept {
-    // This generates much better code than the default implementation
-    // It's unclear why, I believe this is due to an optimization bug in the clang.
-    //
-    //    math::details::Matrix33<T> t(lhs);
-    //    lhs = rhs;
-    //    rhs = t;
-    //
-    // clang always copy lhs on the stack, even if it's never using it (it's using the
-    // copy it has in registers).
-
+template<typename T>
+constexpr 
+void
+swap(math::details::Matrix33<T>& lhs, math::details::Matrix33<T>& rhs) noexcept {
     const T t00 = lhs[0][0];
     const T t01 = lhs[0][1];
     const T t02 = lhs[0][2];

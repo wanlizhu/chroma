@@ -18,12 +18,7 @@ namespace details {
 template<typename T>
 class Quaternion;
 
-/**
- * A 4x4 column-major matrix class.
- *
- * Conceptually a 4x4 matrix is a an array of 4 column double4:
- */
-template <typename T>
+template<typename T>
 class MATH_EMPTY_BASES Matrix44 :
     public VectorUnaryOperators<Matrix44, T>,
     public VectorComparisonOperators<Matrix44, T>,
@@ -64,52 +59,64 @@ private:
     col_type m_value[NUM_COLS];
 
 public:
-    inline constexpr col_type const& operator[](size_t column) const {
-        // only possible in C++0x14 with constexpr
+    inline constexpr 
+    col_type const&
+    operator[](size_t column) const {
         assert(column < NUM_COLS);
         return m_value[column];
     }
-    inline constexpr col_type& operator[](size_t column) {
+
+    inline constexpr 
+    col_type&
+    operator[](size_t column) {
         assert(column < NUM_COLS);
         return m_value[column];
     }
 
 
-    // leaves object uninitialized. use with caution.
-    constexpr explicit Matrix44(no_init) {}
-    // initialize to identity.
-    constexpr Matrix44();
-    // initialize to Identity*scalar.
+    constexpr explicit 
+    Matrix44(no_init) {}
+    
+    constexpr
+    Matrix44();
+    
     template<typename U>
-    constexpr explicit Matrix44(U v);
-    // sets the diagonal to a vector.
-    template <typename U>
-    constexpr explicit Matrix44(const Vector4<U>& v);
-    // construct from another matrix of the same size.
-    template <typename U>
-    constexpr explicit Matrix44(const Matrix44<U>& rhs);
-    // construct from 4 column vectors.
-    template <typename A, typename B, typename C, typename D>
-    constexpr Matrix44(const Vector4<A>& v0, const Vector4<B>& v1, const Vector4<C>& v2, const Vector4<D>& v3);
-    // construct from 16 elements in column-major form.
-    template <typename A, typename B, typename C, typename D,
-        typename E, typename F, typename G, typename H,
-        typename I, typename J, typename K, typename L,
-        typename M, typename N, typename O, typename P>
-        constexpr explicit Matrix44(A m00, B m01, C m02, D m03,
-                                    E m10, F m11, G m12, H m13,
-                                    I m20, J m21, K m22, L m23,
-                                    M m30, N m31, O m32, P m33);
+    constexpr explicit
+    Matrix44(U v);
+    
+    template<typename U>
+    constexpr explicit
+    Matrix44(const Vector4<U>& v);
+    
+    template<typename U>
+    constexpr explicit
+    Matrix44(const Matrix44<U>& rhs);
+    
+    template<typename A, typename B, typename C, typename D>
+    constexpr
+    Matrix44(const Vector4<A>& v0, const Vector4<B>& v1, const Vector4<C>& v2, const Vector4<D>& v3);
+    
+    template<typename A, typename B, typename C, typename D,
+              typename E, typename F, typename G, typename H,
+              typename I, typename J, typename K, typename L,
+              typename M, typename N, typename O, typename P>
+    constexpr explicit
+    Matrix44(A m00, B m01, C m02, D m03,
+             E m10, F m11, G m12, H m13,
+             I m20, J m21, K m22, L m23,
+             M m30, N m31, O m32, P m33);
+
     // row major initialize.
     struct row_major_init {
         template<typename A, typename B, typename C, typename D,
-            typename E, typename F, typename G, typename H,
-            typename I, typename J, typename K, typename L,
-            typename M, typename N, typename O, typename P>
-            constexpr explicit row_major_init(A m00, B m01, C m02, D m03,
-                                              E m10, F m11, G m12, H m13,
-                                              I m20, J m21, K m22, L m23,
-                                              M m30, N m31, O m32, P m33) noexcept
+                 typename E, typename F, typename G, typename H,
+                 typename I, typename J, typename K, typename L,
+                 typename M, typename N, typename O, typename P>
+        constexpr explicit 
+        row_major_init(A m00, B m01, C m02, D m03,
+                       E m10, F m11, G m12, H m13,
+                       I m20, J m21, K m22, L m23,
+                       M m30, N m31, O m32, P m33) noexcept
             : m(m00, m10, m20, m30,
                 m01, m11, m21, m31,
                 m02, m12, m22, m32,
@@ -118,24 +125,29 @@ public:
         friend Matrix44;
         Matrix44 m;
     };
-    constexpr explicit Matrix44(row_major_init c) : Matrix44(std::move(c.m)) { }
-    // construct from a quaternion.
-    template <typename U>
-    constexpr explicit Matrix44(const Quaternion<U>& q);
-    // construct from a 3x3 matrix.
-    template <typename U>
-    constexpr explicit Matrix44(const Matrix33<U>& matrix);
-    // construct from a 3x3 matrix and 3d translation.
-    template <typename U, typename V>
-    constexpr Matrix44(const Matrix33<U>& matrix, const Vector3<V>& translation);
-    // construct from a 3x3 matrix and 4d last column.
-    template <typename U, typename V>
-    constexpr Matrix44(const Matrix33<U>& matrix, const Vector4<V>& column3);
+    constexpr explicit
+    Matrix44(row_major_init c)
+        : Matrix44(std::move(c.m)) {}
 
+    template<typename U>
+    constexpr explicit 
+    Matrix44(const Quaternion<U>& q);
 
-    // returns false if the two matrices are different. May return false if they're the same,
-    // with some elements only differing by +0 or -0. Behaviour is undefined with NaNs.
-    static constexpr bool fuzzy_equal(Matrix44 const& l, Matrix44 const& r) noexcept {
+    template<typename U>
+    constexpr explicit
+    Matrix44(const Matrix33<U>& matrix);
+
+    template<typename U, typename V>
+    constexpr 
+    Matrix44(const Matrix33<U>& matrix, const Vector3<V>& translation);
+
+    template<typename U, typename V>
+    constexpr
+    Matrix44(const Matrix33<U>& matrix, const Vector4<V>& column3);
+
+    static constexpr
+    bool
+    fuzzy_equal(Matrix44 const& l, Matrix44 const& r) noexcept {
         uint64_t const* const li = reinterpret_cast<uint64_t const*>(&l);
         uint64_t const* const ri = reinterpret_cast<uint64_t const*>(&r);
         uint64_t result = 0;
@@ -147,80 +159,96 @@ public:
         return result != 0;
     }
 
-    static constexpr Matrix44 ortho(T left, T right, T bottom, T top, T near, T far);
+    static constexpr
+    Matrix44
+    ortho(T left, T right, T bottom, T top, T near, T far);
 
-    static constexpr Matrix44 frustum(T left, T right, T bottom, T top, T near, T far);
+    static constexpr
+    Matrix44
+    frustum(T left, T right, T bottom, T top, T near, T far);
 
     enum class Fov {
         HORIZONTAL,
         VERTICAL
     };
-    static constexpr Matrix44 perspective(T fov, T aspect, T near, T far, Fov direction = Fov::VERTICAL);
+    static constexpr 
+    Matrix44
+    perspective(T fov, T aspect, T near, T far, Fov direction = Fov::VERTICAL);
 
-    template <typename A, typename B, typename C>
-    static constexpr Matrix44 look_at(const Vector3<A>& eye, const Vector3<B>& center, const Vector3<C>& up);
+    template<typename A, typename B, typename C>
+    static constexpr
+    Matrix44
+    look_at(const Vector3<A>& eye, const Vector3<B>& center, const Vector3<C>& up);
 
-    template <typename A>
-    static constexpr Vector3<A> project(const Matrix44& projectionMatrix, Vector3<A> vertice) {
+    template<typename A>
+    static constexpr
+    Vector3<A>
+    project(const Matrix44& projectionMatrix, Vector3<A> vertice) {
         Vector4<A> r = projectionMatrix * Vector4<A>{ vertice, 1 };
         return r.xyz * (1 / r.w);
     }
 
-    template <typename A>
-    static constexpr Vector4<A> project(const Matrix44& projectionMatrix, Vector4<A> vertice) {
+    template<typename A>
+    static constexpr
+    Vector4<A>
+    project(const Matrix44& projectionMatrix, Vector4<A> vertice) {
         vertice = projectionMatrix * vertice;
         return { vertice.xyz * (1 / vertice.w), 1 };
     }
 
-    // Constructs a 3x3 matrix from the upper-left corner of this 4x4 matrix.
-    inline constexpr Matrix33<T> upper_left() const {
+    inline constexpr 
+    Matrix33<T>
+    upper_left() const {
         return Matrix33<T>(m_value[0].xyz, m_value[1].xyz, m_value[2].xyz);
     }
 
-    template <typename A>
-    static constexpr Matrix44 translate(const Vector3<A>& t) {
+    template<typename A>
+    static constexpr
+    Matrix44
+    translate(const Vector3<A>& t) {
         Matrix44 r;
         r[3] = Vector4<T>{ t, 1 };
         return r;
     }
 
-    template <typename A>
-    static constexpr Matrix44 translate(A t) {
+    template<typename A>
+    static constexpr 
+    Matrix44
+    translate(A t) {
         Matrix44 r;
         r[3] = Vector4<T>{ t, t, t, 1 };
         return r;
     }
 
-    template <typename A>
-    static constexpr Matrix44 scale(const Vector3<A>& s) {
+    template<typename A>
+    static constexpr
+    Matrix44
+    scale(const Vector3<A>& s) {
         return Matrix44{ Vector4<T>{ s, 1 } };
     }
 
-    template <typename A>
-    static constexpr Matrix44 scale(A s) {
+    template<typename A>
+    static constexpr 
+    Matrix44
+    scale(A s) {
         return Matrix44{ Vector4<T>{ s, s, s, 1 } };
     }
 };
 
 
-// ----------------------------------------------------------------------------------------
-// Constructors
-// ----------------------------------------------------------------------------------------
-
-// Since the matrix code could become pretty big quickly, we don't inline most
-// operations.
-
-template <typename T>
-constexpr Matrix44<T>::Matrix44() {
+template<typename T>
+constexpr
+Matrix44<T>::Matrix44() {
     m_value[0] = col_type(1.0f, 0.0f, 0.0f, 0.0f);
     m_value[1] = col_type(0.0f, 1.0f, 0.0f, 0.0f);
     m_value[2] = col_type(0.0f, 0.0f, 1.0f, 0.0f);
     m_value[3] = col_type(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix44<T>::Matrix44(U v) {
+template<typename T>
+template<typename U>
+constexpr
+Matrix44<T>::Matrix44(U v) {
     m_value[0] = col_type(v, 0, 0, 0);
     m_value[1] = col_type(0, v, 0, 0);
     m_value[2] = col_type(0, 0, v, 0);
@@ -229,51 +257,54 @@ constexpr Matrix44<T>::Matrix44(U v) {
 
 template<typename T>
 template<typename U>
-constexpr Matrix44<T>::Matrix44(const Vector4<U>& v) {
+constexpr
+Matrix44<T>::Matrix44(const Vector4<U>& v) {
     m_value[0] = col_type(v.x, 0, 0, 0);
     m_value[1] = col_type(0, v.y, 0, 0);
     m_value[2] = col_type(0, 0, v.z, 0);
     m_value[3] = col_type(0, 0, 0, v.w);
 }
 
-// construct from 16 scalars
 template<typename T>
-template <typename A, typename B, typename C, typename D,
-    typename E, typename F, typename G, typename H,
-    typename I, typename J, typename K, typename L,
-    typename M, typename N, typename O, typename P>
-    constexpr Matrix44<T>::Matrix44(A m00, B m01, C m02, D m03,
-                                    E m10, F m11, G m12, H m13,
-                                    I m20, J m21, K m22, L m23,
-                                    M m30, N m31, O m32, P m33) {
+template<typename A, typename B, typename C, typename D,
+         typename E, typename F, typename G, typename H,
+         typename I, typename J, typename K, typename L,
+         typename M, typename N, typename O, typename P>
+constexpr 
+Matrix44<T>::Matrix44(A m00, B m01, C m02, D m03,
+                      E m10, F m11, G m12, H m13,
+                      I m20, J m21, K m22, L m23,
+                      M m30, N m31, O m32, P m33) {
     m_value[0] = col_type(m00, m01, m02, m03);
     m_value[1] = col_type(m10, m11, m12, m13);
     m_value[2] = col_type(m20, m21, m22, m23);
     m_value[3] = col_type(m30, m31, m32, m33);
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix44<T>::Matrix44(const Matrix44<U>& rhs) {
+template<typename T>
+template<typename U>
+constexpr
+Matrix44<T>::Matrix44(const Matrix44<U>& rhs) {
     for (size_t col = 0; col < NUM_COLS; ++col) {
         m_value[col] = col_type(rhs[col]);
     }
 }
 
-// Construct from 4 column vectors.
-template <typename T>
-template <typename A, typename B, typename C, typename D>
-constexpr Matrix44<T>::Matrix44(const Vector4<A>& v0, const Vector4<B>& v1,
-                                const Vector4<C>& v2, const Vector4<D>& v3) {
+template<typename T>
+template<typename A, typename B, typename C, typename D>
+constexpr 
+Matrix44<T>::Matrix44(const Vector4<A>& v0, const Vector4<B>& v1,
+                      const Vector4<C>& v2, const Vector4<D>& v3) {
     m_value[0] = col_type(v0);
     m_value[1] = col_type(v1);
     m_value[2] = col_type(v2);
     m_value[3] = col_type(v3);
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix44<T>::Matrix44(const Quaternion<U>& q) {
+template<typename T>
+template<typename U>
+constexpr 
+Matrix44<T>::Matrix44(const Quaternion<U>& q) {
     const U n = q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w;
     const U s = n > 0 ? 2 / n : 0;
     const U x = s * q.x;
@@ -294,40 +325,40 @@ constexpr Matrix44<T>::Matrix44(const Quaternion<U>& q) {
     m_value[3] = col_type(0, 0, 0, 1);  // NOLINT
 }
 
-template <typename T>
-template <typename U>
-constexpr Matrix44<T>::Matrix44(const Matrix33<U>& m) {
+template<typename T>
+template<typename U>
+constexpr 
+Matrix44<T>::Matrix44(const Matrix33<U>& m) {
     m_value[0] = col_type(m[0][0], m[0][1], m[0][2], 0);
     m_value[1] = col_type(m[1][0], m[1][1], m[1][2], 0);
     m_value[2] = col_type(m[2][0], m[2][1], m[2][2], 0);
     m_value[3] = col_type(0, 0, 0, 1);  // NOLINT
 }
 
-template <typename T>
-template <typename U, typename V>
-constexpr Matrix44<T>::Matrix44(const Matrix33<U>& m, const Vector3<V>& v) {
+template<typename T>
+template<typename U, typename V>
+constexpr 
+Matrix44<T>::Matrix44(const Matrix33<U>& m, const Vector3<V>& v) {
     m_value[0] = col_type(m[0][0], m[0][1], m[0][2], 0);
     m_value[1] = col_type(m[1][0], m[1][1], m[1][2], 0);
     m_value[2] = col_type(m[2][0], m[2][1], m[2][2], 0);
     m_value[3] = col_type(v[0], v[1], v[2], 1);  // NOLINT
 }
 
-template <typename T>
-template <typename U, typename V>
-constexpr Matrix44<T>::Matrix44(const Matrix33<U>& m, const Vector4<V>& v) {
+template<typename T>
+template<typename U, typename V>
+constexpr 
+Matrix44<T>::Matrix44(const Matrix33<U>& m, const Vector4<V>& v) {
     m_value[0] = col_type(m[0][0], m[0][1], m[0][2], 0);  // NOLINT
     m_value[1] = col_type(m[1][0], m[1][1], m[1][2], 0);  // NOLINT
     m_value[2] = col_type(m[2][0], m[2][1], m[2][2], 0);  // NOLINT
     m_value[3] = col_type(v[0], v[1], v[2], v[3]);  // NOLINT
 }
 
-
-// ----------------------------------------------------------------------------------------
-// Helpers
-// ----------------------------------------------------------------------------------------
-
-template <typename T>
-constexpr Matrix44<T> Matrix44<T>::ortho(T left, T right, T bottom, T top, T near, T far) {
+template<typename T>
+constexpr 
+Matrix44<T>
+Matrix44<T>::ortho(T left, T right, T bottom, T top, T near, T far) {
     Matrix44<T> m;
     m[0][0] = 2 / (right - left);
     m[1][1] = 2 / (top - bottom);
@@ -338,8 +369,10 @@ constexpr Matrix44<T> Matrix44<T>::ortho(T left, T right, T bottom, T top, T nea
     return m;
 }
 
-template <typename T>
-constexpr Matrix44<T> Matrix44<T>::frustum(T left, T right, T bottom, T top, T near, T far) {
+template<typename T>
+constexpr
+Matrix44<T>
+Matrix44<T>::frustum(T left, T right, T bottom, T top, T near, T far) {
     Matrix44<T> m;
     m[0][0] = (2 * near) / (right - left);
     m[1][1] = (2 * near) / (top - bottom);
@@ -352,8 +385,10 @@ constexpr Matrix44<T> Matrix44<T>::frustum(T left, T right, T bottom, T top, T n
     return m;
 }
 
-template <typename T>
-constexpr Matrix44<T> Matrix44<T>::perspective(T fov, T aspect, T near, T far, Matrix44::Fov direction) {
+template<typename T>
+constexpr
+Matrix44<T>
+Matrix44<T>::perspective(T fov, T aspect, T near, T far, Matrix44::Fov direction) {
     T h;
     T w;
 
@@ -373,9 +408,11 @@ constexpr Matrix44<T> Matrix44<T>::perspective(T fov, T aspect, T near, T far, M
  * local Y-up coordinate system. "eye" is where the camera is located, "center" is the points its
  * looking at and "up" defines where the Y axis of the camera's local coordinate system is.
  */
-template <typename T>
-template <typename A, typename B, typename C>
-constexpr Matrix44<T> Matrix44<T>::look_at(const Vector3<A>& eye, const Vector3<B>& center, const Vector3<C>& up) {
+template<typename T>
+template<typename A, typename B, typename C>
+constexpr
+Matrix44<T>
+Matrix44<T>::look_at(const Vector3<A>& eye, const Vector3<B>& center, const Vector3<C>& up) {
     Vector3<T> z_axis(normalize(center - eye));
     Vector3<T> norm_up(normalize(up));
     if (std::abs(dot(z_axis, norm_up)) > T(0.999)) {
@@ -390,22 +427,11 @@ constexpr Matrix44<T> Matrix44<T>::look_at(const Vector3<A>& eye, const Vector3<
                        Vector4<T>(eye, 1));
 }
 
-
-// ----------------------------------------------------------------------------------------
-// Arithmetic operators outside of class
-// ----------------------------------------------------------------------------------------
-
-/* We use non-friend functions here to prevent the compiler from using
- * implicit conversions, for instance of a scalar to a vector. The result would
- * not be what the caller expects.
- *
- * Also note that the order of the arguments in the inner loop is important since
- * it determines the output type (only relevant when T != U).
- */
-
  // matrix * column-vector, result is a vector of the same type than the input vector
-template <typename T, typename U>
-constexpr typename Matrix44<T>::col_type MATH_PURE operator *(const Matrix44<T>& lhs, const Vector4<U>& rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename Matrix44<T>::col_type 
+operator*(const Matrix44<T>& lhs, const Vector4<U>& rhs) {
     // Result is initialized to zero.
     typename Matrix44<T>::col_type result = {};
     for (size_t col = 0; col < Matrix44<T>::NUM_COLS; ++col) {
@@ -415,15 +441,19 @@ constexpr typename Matrix44<T>::col_type MATH_PURE operator *(const Matrix44<T>&
 }
 
 // mat44 * vec3, result is vec3( mat44 * {vec3, 1} )
-template <typename T, typename U>
-constexpr typename Matrix44<T>::col_type MATH_PURE operator *(const Matrix44<T>& lhs, const Vector3<U>& rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename Matrix44<T>::col_type 
+operator*(const Matrix44<T>& lhs, const Vector3<U>& rhs) {
     return lhs * Vector4<U>{ rhs, 1 };
 }
 
 
 // row-vector * matrix, result is a vector of the same type than the input vector
-template <typename T, typename U>
-constexpr typename Matrix44<U>::row_type MATH_PURE operator *(const Vector4<U>& lhs, const Matrix44<T>& rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename Matrix44<U>::row_type 
+operator*(const Vector4<U>& lhs, const Matrix44<T>& rhs) {
     typename Matrix44<U>::row_type result;
     for (size_t col = 0; col < Matrix44<T>::NUM_COLS; ++col) {
         result[col] = dot(lhs, rhs[col]);
@@ -432,25 +462,25 @@ constexpr typename Matrix44<U>::row_type MATH_PURE operator *(const Vector4<U>& 
 }
 
 // matrix * scalar, result is a matrix of the same type than the input matrix
-template <typename T, typename U>
-constexpr typename std::enable_if<std::is_arithmetic<U>::value, Matrix44<T>>::type MATH_PURE
-operator *(Matrix44<T> lhs, U rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename std::enable_if<std::is_arithmetic<U>::value, Matrix44<T>>::type
+operator*(Matrix44<T> lhs, U rhs) {
     return lhs *= rhs;
 }
 
 // scalar * matrix, result is a matrix of the same type than the input matrix
-template <typename T, typename U>
-constexpr typename std::enable_if<std::is_arithmetic<U>::value, Matrix44<T>>::type MATH_PURE
-operator *(U lhs, const Matrix44<T>& rhs) {
+template<typename T, typename U>
+constexpr MATH_PURE
+typename std::enable_if<std::is_arithmetic<U>::value, Matrix44<T>>::type 
+operator*(U lhs, const Matrix44<T>& rhs) {
     return rhs * lhs;
 }
 
-
-/* FIXME: this should go into TMatSquareFunctions<> but for some reason
- * BASE<T>::col_type is not accessible from there (???)
- */
 template<typename T>
-constexpr typename Matrix44<T>::col_type MATH_PURE diag(const Matrix44<T>& m) {
+constexpr MATH_PURE
+typename Matrix44<T>::col_type 
+diag(const Matrix44<T>& m) {
     return matrix::diag(m);
 }
 
@@ -463,18 +493,10 @@ typedef details::Matrix44<float> mat4f;
 
 
 namespace std {
-template <typename T>
-constexpr void swap(math::details::Matrix44<T>& lhs, math::details::Matrix44<T>& rhs) noexcept {
-    // This generates much better code than the default implementation
-    // It's unclear why, I believe this is due to an optimization bug in the clang.
-    //
-    //    math::details::Matrix44<T> t(lhs);
-    //    lhs = rhs;
-    //    rhs = t;
-    //
-    // clang always copy lhs on the stack, even if it's never using it (it's using the
-    // copy it has in registers).
-
+template<typename T>
+constexpr
+void
+swap(math::details::Matrix44<T>& lhs, math::details::Matrix44<T>& rhs) noexcept {
     const T t00 = lhs[0][0];
     const T t01 = lhs[0][1];
     const T t02 = lhs[0][2];

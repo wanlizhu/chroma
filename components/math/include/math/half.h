@@ -26,11 +26,15 @@ namespace math {
 
 using half = __fp16;
 
-inline constexpr  uint16_t getBits(half const& h) noexcept {
+inline constexpr  
+uint16_t 
+getBits(half const& h) noexcept {
     return MAKE_CONSTEXPR(reinterpret_cast<uint16_t const&>(h));
 }
 
-inline constexpr half makeHalf(uint16_t bits) noexcept {
+inline constexpr 
+half
+makeHalf(uint16_t bits) noexcept {
     return MAKE_CONSTEXPR(reinterpret_cast<half const&>(bits));
 }
 

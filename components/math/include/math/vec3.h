@@ -46,38 +46,52 @@ public:
         };
     };
 
-    inline constexpr size_type size() const { return SIZE; }
-    inline constexpr T const& operator[](size_t i) const {
-        // only possible in C++0x14 with constexpr
-        assert(i < SIZE);
-        return v[i];
+    inline constexpr 
+    size_type 
+    size() const {
+        return SIZE;
     }
-    inline constexpr T& operator[](size_t i) {
+
+    inline constexpr 
+    T const&
+    operator[](size_t i) const {
         assert(i < SIZE);
         return v[i];
     }
 
+    inline constexpr
+    T&
+    operator[](size_t i) {
+        assert(i < SIZE);
+        return v[i];
+    }
 
-    // default constructor
     constexpr Vector3() = default;
 
-    // handles implicit conversion to a tvec4. must not be explicit.
-    template<typename A, typename = typename std::enable_if<std::is_arithmetic<A>::value >::type>
-    constexpr Vector3(A v) : x(v), y(v), z(v) { }
+    template<typename A, typename = typename std::enable_if<std::is_arithmetic<A>::value>::type>
+    constexpr 
+    Vector3(A v) 
+        : x(v), y(v), z(v) {}
 
     template<typename A, typename B, typename C>
-    constexpr Vector3(A x, B y, C z) : x(x), y(y), z(z) { }
+    constexpr 
+    Vector3(A x, B y, C z)
+        : x(x), y(y), z(z) {}
 
     template<typename A, typename B>
-    constexpr Vector3(const Vector2<A>& v, B z) : x(v.x), y(v.y), z(z) { }
+    constexpr
+    Vector3(const Vector2<A>& v, B z)
+        : x(v.x), y(v.y), z(z) {}
 
     template<typename A>
-    explicit constexpr Vector3(const Vector3<A>& v) : x(v.x), y(v.y), z(v.z) { }
+    explicit constexpr 
+    Vector3(const Vector3<A>& v) 
+        : x(v.x), y(v.y), z(v.z) {}
 
-    // cross product works only on vectors of size 3
     template <typename RT>
-    friend inline
-        constexpr Vector3 cross(const Vector3& u, const Vector3<RT>& v) {
+    friend inline constexpr
+    Vector3 
+    cross(const Vector3& u, const Vector3<RT>& v) {
         return Vector3(
             u.y*v.z - u.z*v.y,
             u.z*v.x - u.x*v.z,

@@ -33,35 +33,47 @@ public:
         struct { T r, g; };
     };
 
-    inline constexpr size_type size() const { return SIZE; }
-    inline constexpr T const& operator[](size_t i) const {
-        // only possible in C++0x14 with constexpr
-        assert(i < SIZE);
-        return v[i];
+    inline constexpr 
+    size_type
+    size() const {
+        return SIZE;
     }
-    inline constexpr T& operator[](size_t i) {
+
+    inline constexpr 
+    T const&
+    operator[](size_t i) const {
         assert(i < SIZE);
         return v[i];
     }
 
+    inline constexpr 
+    T&
+    operator[](size_t i) {
+        assert(i < SIZE);
+        return v[i];
+    }
 
-    // default constructor
     constexpr Vector2() = default;
 
-    // handles implicit conversion to a tvec4. must not be explicit.
-    template<typename A, typename = typename std::enable_if<std::is_arithmetic<A>::value >::type>
-    constexpr Vector2(A v) : x(v), y(v) { }
+    template<typename A, typename = typename std::enable_if<std::is_arithmetic<A>::value>::type>
+    constexpr
+    Vector2(A v)
+        : x(v), y(v) {}
 
     template<typename A, typename B>
-    constexpr Vector2(A x, B y) : x(x), y(y) { }
+    constexpr
+    Vector2(A x, B y) 
+        : x(x), y(y) {}
 
     template<typename A>
-    explicit constexpr Vector2(const Vector2<A>& v) : x(v.x), y(v.y) { }
+    explicit constexpr
+    Vector2(const Vector2<A>& v) 
+        : x(v.x), y(v.y) {}
 
-    // cross product works only on vectors of size 2 or 3
     template <typename RT>
-    friend inline
-        constexpr value_type cross(const Vector2& u, const Vector2<RT>& v) {
+    friend inline constexpr
+    value_type
+    cross(const Vector2& u, const Vector2<RT>& v) {
         return value_type(u.x*v.y - u.y*v.x);
     }
 };

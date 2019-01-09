@@ -9,6 +9,11 @@ namespace utils {
 
 class Path {
 public:
+    static std::string canonical(const std::string& pathname);
+    static Path concat(const std::string& root, const std::string& leaf);
+    static Path pwd();
+    static Path current_executable();
+
     Path() = default;
     Path(const char* pathname);
     Path(const std::string& pathname);
@@ -17,13 +22,11 @@ public:
     bool exists() const;
     bool is_file() const;
     bool is_directory() const;
-    bool is_empty() const { return m_path.empty(); }
-    const char* c_str() const { return m_path.c_str(); }
+    inline bool is_empty() const { return m_path.empty(); }
+    inline const char* c_str() const { return m_path.c_str(); }
 
-    void set(const std::string& pathname) {
-        m_path = canonical(pathname);
-    }
-    const std::string& get() const { return m_path; }
+    inline void set(const std::string& pathname) { m_path = canonical(pathname); }
+    inline const std::string& get() const { return m_path; }
     Path parent() const;
     Path ancestor(int n) const;
 
@@ -38,28 +41,22 @@ public:
     Path concat(const Path& path) const;
     void concat_to_self(const Path& path);
 
-    operator std::string const&() const { return m_path; }
-    Path operator+(const Path& rhs) const { return concat(rhs); }
-    Path& operator+=(const Path& rhs) {
+    inline operator std::string const&() const { return m_path; }
+    inline Path operator+(const Path& rhs) const { return concat(rhs); }
+    inline Path& operator+=(const Path& rhs) {
         concat_to_self(rhs);
         return *this;
     }
-    bool operator==(const Path& rhs) const { return m_path == rhs.m_path; }
-    bool operator!=(const Path& rhs) const { return m_path != rhs.m_path; }
-    bool operator<(const Path& rhs) const { return m_path < rhs.m_path; }
-    bool operator>(const Path& rhs) const { return m_path > rhs.m_path; }
+    inline bool operator==(const Path& rhs) const { return m_path == rhs.m_path; }
+    inline bool operator!=(const Path& rhs) const { return m_path != rhs.m_path; }
+    inline bool operator<(const Path& rhs) const { return m_path < rhs.m_path; }
+    inline bool operator>(const Path& rhs) const { return m_path > rhs.m_path; }
     friend std::ostream& operator<<(std::ostream& os, const Path& path);
-
-    static std::string canonical(const std::string& pathname);
-    static Path concat(const std::string& root, const std::string& leaf);
-
-    static Path pwd();
-    static Path current_executable();
 
     bool mkdir() const;
     bool mkdirs() const;
     bool unlink_file();
-    std::vector<Path> list_contents() const;
+    std::vector<Path> list() const;
 
 private:
     std::string m_path;
