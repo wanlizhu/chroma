@@ -119,7 +119,12 @@ ENDFUNCTION(LIST_LICENSES)
 # Sub-projects
 # ===============================================
 # Common to all platforms
+ADD_SUBDIRECTORY(${EXTERNAL}/libz/chroma)
+ADD_SUBDIRECTORY(${EXTERNAL}/libpng/chroma)
+ADD_SUBDIRECTORY(${EXTERNAL}/tinyexr/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/libgtest/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/benchmark/chroma)
+ADD_SUBDIRECTORY(${COMPONENTS}/minigl)
 ADD_SUBDIRECTORY(${COMPONENTS}/math)
 ADD_SUBDIRECTORY(${COMPONENTS}/utils)
+

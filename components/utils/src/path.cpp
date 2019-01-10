@@ -61,7 +61,7 @@ bool Path::is_directory() const {
 Path Path::concat(const Path& path) const {
     if (path.is_empty()) return *this;
     if (path.is_absolute()) return path;
-    if (m_path.back() != SEPARATOR && !m_path.empty()) {
+    if (!m_path.empty() && m_path.back() != SEPARATOR) {
         return Path(m_path + SEPARATOR + path.get());
     }
     return Path(m_path + path.get());
@@ -72,7 +72,7 @@ void Path::concat_to_self(const Path& path)  {
         if (path.is_absolute()) {
             m_path = path.get();
         } 
-        else if (m_path.back() != SEPARATOR) {
+        else if (!m_path.empty() && m_path.back() != SEPARATOR) {
             m_path = canonical(m_path + SEPARATOR + path.get());
         } 
         else {

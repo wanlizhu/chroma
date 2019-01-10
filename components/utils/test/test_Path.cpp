@@ -67,6 +67,9 @@ TEST(PathTest, Assignment) {
 }
 
 TEST(PathTest, Concatenate) {
+    Path p0, p1("name.png");
+    EXPECT_EQ("name.png", (p0 + p1).get());
+
     Path root("\\Volumes\\Replicant\\blue");
 
     Path r;
