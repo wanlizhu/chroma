@@ -11,15 +11,15 @@ TEST(MiniGLTest, Initialization) {
 
 TEST(MiniGLTest, GetVersion) {
     EXPECT_EQ(0, bind());
-    gl::OpenGLContext context = gl::createOpenGLContext();
-    gl::setCurrentOpenGLContext(context);
+    gl::OpenGLContext context = gl::create_opengl_context();
+    gl::set_current_opengl_context(context);
 
     GLint major = 0, minor = 0;
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
 
     printf("OpenGL v%d.%d\n", major, minor);
-    gl::destroyOpenGLContext(context);
+    gl::destroy_opengl_context(context);
     unbind();
 }
 
@@ -33,13 +33,13 @@ TEST(MiniGLTest, DoubleInitialization) {
 TEST(MiniGLTest, CallOpenGL) {
     EXPECT_EQ(0, bind());
 
-    gl::OpenGLContext context = gl::createOpenGLContext();
+    gl::OpenGLContext context = gl::create_opengl_context();
     EXPECT_TRUE(context != nullptr);
 
-    gl::setCurrentOpenGLContext(context);
+    gl::set_current_opengl_context(context);
     EXPECT_TRUE(glGetString(GL_VENDOR) != nullptr);
 
-    gl::destroyOpenGLContext(context);
+    gl::destroy_opengl_context(context);
     unbind();
 }
 
@@ -48,20 +48,20 @@ TEST(MiniGLTest, CallOpenGLDoubleInit) {
     EXPECT_EQ(result, bind());
     unbind();
 
-    gl::OpenGLContext context = gl::createOpenGLContext();
+    gl::OpenGLContext context = gl::create_opengl_context();
     EXPECT_TRUE(context != nullptr);
 
-    gl::setCurrentOpenGLContext(context);
+    gl::set_current_opengl_context(context);
     EXPECT_TRUE(glGetString(GL_VENDOR) != nullptr);
 
-    gl::destroyOpenGLContext(context);
+    gl::destroy_opengl_context(context);
     unbind();
 }
 
 TEST(MiniGLTest, CallBindAndGetBound) {
     EXPECT_EQ(0, bind());
-    gl::OpenGLContext context = gl::createOpenGLContext();
-    gl::setCurrentOpenGLContext(context);
+    gl::OpenGLContext context = gl::create_opengl_context();
+    gl::set_current_opengl_context(context);
 
     GLuint texId = 0;
     glGenTextures(1, &texId);
@@ -71,7 +71,7 @@ TEST(MiniGLTest, CallBindAndGetBound) {
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexId);
     ASSERT_EQ(texId, boundTexId);
 
-    gl::destroyOpenGLContext(context);
+    gl::destroy_opengl_context(context);
     unbind();
 }
 
