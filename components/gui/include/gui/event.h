@@ -2,6 +2,8 @@
 #define CHROMA_GUI_EVENT_H
 
 #include <math/vec2.h>
+#include <vector>
+#include <string>
 
 #ifdef MOD_ALT
 #undef MOD_ALT
@@ -37,13 +39,12 @@ struct MouseEvent : public IEvent {
     struct {
         bool valid = false;
         double x, y;
-        int mods = 0;
     } wheel, move;
 
     struct {
         bool valid = false;
-        EventEnum id;
-        EventEnum action;
+        int id;
+        int action;
         int mods = 0;
     } button;
 
@@ -53,21 +54,16 @@ struct MouseEvent : public IEvent {
 
 struct KeyEvent : public IEvent {
     int key = 0;
-    EventEnum action;
+    int action;
     int mods = 0;
 
     virtual ~KeyEvent() = default;
 };
 
-struct ResizeEvent : public IEvent {
-    int width;
-    int height;
+struct DropEvent : public IEvent {
+	std::vector<std::string> paths;
 
-    virtual ~ResizeEvent() = default;
-};
-
-struct ShowEvent : public IEvent {
-    virtual ~ShowEvent() = default;
+	virtual ~DropEvent() = default;
 };
 
 }

@@ -4,14 +4,7 @@
 
 namespace gui {
 
-namespace details {
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    std::shared_ptr<Window> user(static_cast<Window*>(glfwGetWindowUserPointer(window)));
-    
-}
-
-} // namespace details
+int Window::m_instances = 0;
 
 Window::Builder& Window::Builder::title(const char* str) {
     m_title = str;
@@ -45,9 +38,29 @@ Window::Builder& Window::Builder::stencil_bits(int bits) {
     return *this;
 }
 
+Window::Builder& Window::Builder::decorated(bool enabled) {
+	m_decorated = enabled;
+	return *this;
+}
+
+Window::Builder& Window::Builder::visible(bool enabled) {
+	m_visible = enabled;
+	return *this;
+}
+
+Window::Builder& Window::Builder::srgb(bool enabled) {
+	m_srgb = enabled;
+	return *this;
+}
+
 std::shared_ptr<Window> Window::Builder::create() {
+	Window::init();
+
 #ifdef APPLE
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+#endif
+#ifndef NDEBUG
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_gl_major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_gl_minor);
@@ -55,6 +68,9 @@ std::shared_ptr<Window> Window::Builder::create() {
     glfwWindowHint(GLFW_RESIZABLE, m_resizable ? 1 : 0);
     glfwWindowHint(GLFW_STENCIL_BITS, m_stencil_bits);
     glfwWindowHint(GLFW_DEPTH_BITS, m_depth_bits);
+	glfwWindowHint(GLFW_VISIBLE, m_visible);
+	glfwWindowHint(GLFW_DECORATED, m_decorated);
+	glfwWindowHint(GLFW_SRGB_CAPABLE, m_srgb);
 
     GLFWwindow* window = glfwCreateWindow(m_width, m_height, m_title, NULL, NULL);
     if (window == nullptr) {
@@ -64,7 +80,12 @@ std::shared_ptr<Window> Window::Builder::create() {
 
     glfwMakeContextCurrent(window);
     glfwSetWindowUserPointer(window, ptr.get());
-    glfwSetFramebufferSizeCallback(window, details::framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, &Window::glfw_framesize_cb);
+	glfwSetKeyCallback(window, &Window::glfw_key_cb);
+	glfwSetMouseButtonCallback(window, &Window::glfw_mousebutton_cb);
+	glfwSetScrollCallback(window, &Window::glfw_scroll_cb);
+	glfwSetCursorPosCallback(window, &Window::glfw_cursorpos_cb);
+	glfwSetDropCallback(window, &Window::glfw_drop_cb);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         throw std::runtime_error("Failed to initialize GLAD.");
@@ -73,9 +94,114 @@ std::shared_ptr<Window> Window::Builder::create() {
     return ptr;
 }
 
+void Window::set_on_resize(FUNC_ON_RESIZE func) {
+	m_callbacks.on_resize = func;
+}
+
+void Window::set_on_redraw(FUNC_ON_REDRAW func) {
+	m_callbacks.on_redraw = func;
+}
+void Window::set_on_mouse(FUNC_ON_MOUSE func) {
+	m_callbacks.on_mouse = func;
+}
+
+void Window::set_on_key(FUNC_ON_KEY func) {
+	m_callbacks.on_key = func;
+}
+
+void Window::set_on_drop(FUNC_ON_DROP func) {
+	m_callbacks.on_drop = func;
+}
+
+void Window::glfw_framesize_cb(GLFWwindow* window, int w, int h) {
+	Window* ptr(static_cast<Window*>(glfwGetWindowUserPointer(window)));
+	if (!ptr) return;
+
+	if (ptr->m_callbacks.on_resize) {
+		ptr->m_callbacks.on_resize(w, h);
+	}
+}
+
+void Window::glfw_mousebutton_cb(GLFWwindow* window, int button, int action, int mods) {
+	Window* ptr(static_cast<Window*>(glfwGetWindowUserPointer(window)));
+	if (!ptr) return;
+
+	MouseEvent ev;
+	ev.button.valid = true;
+	ev.button.id = button;
+	ev.button.action = action;
+	ev.button.mods = mods;
+
+	if (ptr->m_callbacks.on_mouse) {
+		ptr->m_callbacks.on_mouse(ev);
+	}
+}
+
+void Window::glfw_cursorpos_cb(GLFWwindow* window, double x, double y) {
+	Window* ptr(static_cast<Window*>(glfwGetWindowUserPointer(window)));
+	if (!ptr) return;
+
+	MouseEvent ev;
+	ev.move.valid = true;
+	ev.move.x = x;
+	ev.move.y = y;
+
+	if (ptr->m_callbacks.on_mouse) {
+		ptr->m_callbacks.on_mouse(ev);
+	}
+}
+
+void Window::glfw_scroll_cb(GLFWwindow* window, double x, double y) {
+	Window* ptr(static_cast<Window*>(glfwGetWindowUserPointer(window)));
+	if (!ptr) return;
+
+	MouseEvent ev;
+	ev.wheel.valid = true;
+	ev.wheel.x = x;
+	ev.wheel.y = y;
+
+	if (ptr->m_callbacks.on_mouse) {
+		ptr->m_callbacks.on_mouse(ev);
+	}
+}
+
+void Window::glfw_key_cb(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	Window* ptr(static_cast<Window*>(glfwGetWindowUserPointer(window)));
+	if (!ptr) return;
+
+	KeyEvent ev;
+	ev.key = key;
+	ev.action = action;
+	ev.mods = mods;
+
+	if (ptr->m_callbacks.on_key) {
+		ptr->m_callbacks.on_key(ev);
+	}
+}
+
+void Window::glfw_drop_cb(GLFWwindow* window, int count, const char** paths) {
+	Window* ptr(static_cast<Window*>(glfwGetWindowUserPointer(window)));
+	if (!ptr) return;
+
+	DropEvent ev;
+	ev.paths.reserve(count);
+	for (int i = 0; i < count; i++) {
+		ev.paths.push_back(paths[i]);
+	}
+
+	if (ptr->m_callbacks.on_drop) {
+		ptr->m_callbacks.on_drop(ev);
+	}
+}
+
+void Window::glfw_error_cb(int code, const char* msg) {
+	printf("GLFW Error %d : %s\n", code, msg);
+}
 
 bool Window::init() {
-    return glfwInit() == GLFW_TRUE;
+    bool ret = (glfwInit() == GLFW_TRUE);
+	glfwSetErrorCallback(&Window::glfw_error_cb);
+	return ret;
 }
 
 void Window::shutdown() {
@@ -84,7 +210,7 @@ void Window::shutdown() {
 
 Window::Window(GLFWwindow* window)
     : m_window(window) {
-
+	m_instances++;
 }
 
 Window::~Window() {
@@ -92,6 +218,11 @@ Window::~Window() {
         glfwDestroyWindow(m_window);
         m_window = nullptr;
     }
+	m_instances--;
+
+	if (m_instances <= 0) {
+		Window::shutdown();
+	}
 }
 
 math::int2 Window::size() const {
