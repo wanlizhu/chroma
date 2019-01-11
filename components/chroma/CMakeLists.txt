@@ -69,7 +69,7 @@ TARGET_LINK_LIBRARIES(${TARGET} PUBLIC utils)
 TARGET_LINK_LIBRARIES(${TARGET} PUBLIC minigl)
 
 IF(LINUX)
-    target_link_libraries(${TARGET} PRIVATE dl)
+    TARGET_LINK_LIBRARIES(${TARGET} PRIVATE dl)
 ENDIF()
 
 # ===============================================
@@ -100,7 +100,7 @@ TARGET_COMPILE_OPTIONS(${TARGET} PRIVATE
 # ===============================================
 SET(INSTALL_TYPE ARCHIVE)
 INSTALL(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib/${DIST_DIR})
-insINSTALLtall(DIRECTORY ${PUBLIC_HDR_DIR}/chroma DESTINATION include)
+INSTALL(DIRECTORY ${PUBLIC_HDR_DIR}/chroma DESTINATION include)
 INSTALL(FILES "README.md" DESTINATION .)
 
 # ===============================================
