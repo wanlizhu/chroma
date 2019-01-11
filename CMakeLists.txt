@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT(chroma)
 
+OPTION(NO_GUI "Build without GUI system" ON)
+
 IF (WIN32)
     # Link statically against c/c++ lib to avoid missing redistriburable such as "VCRUNTIME140.dll not found."
     OPTION(USE_STATIC_CRT "Link against the static runtime libraries." ON)
@@ -125,7 +127,10 @@ ADD_SUBDIRECTORY(${EXTERNAL}/tinyexr/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/libgtest/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/benchmark/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/glad/chroma)
-ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
 ADD_SUBDIRECTORY(${COMPONENTS}/math)
 ADD_SUBDIRECTORY(${COMPONENTS}/utils)
-ADD_SUBDIRECTORY(${COMPONENTS}/gui)
+IF(NOT NO_GUI)
+    ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
+    ADD_SUBDIRECTORY(${COMPONENTS}/gui)
+ENDIF()
+
