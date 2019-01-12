@@ -2,9 +2,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT(chroma)
 
+OPTION(BUILD_DEMO "Build demo application" ON)
+
 IF (WIN32)
     # Link statically against c/c++ lib to avoid missing redistriburable such as "VCRUNTIME140.dll not found."
-    OPTION(USE_STATIC_CRT "Link against the static runtime libraries." ON)
+    SET(USE_STATIC_CRT ON)
 
     # CL.EXE will not generate .lib without .def file (or without pragma __declspec(dllexport) in front of each functions).
     SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -125,8 +127,12 @@ ADD_SUBDIRECTORY(${EXTERNAL}/tinyexr/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/libgtest/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/benchmark/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/glad/chroma)
+ADD_SUBDIRECTORY(${TOOLS}/resc)
 ADD_SUBDIRECTORY(${COMPONENTS}/math)
 ADD_SUBDIRECTORY(${COMPONENTS}/utils)
-ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
-ADD_SUBDIRECTORY(${COMPONENTS}/gui)
-ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/demo)
+ADD_SUBDIRECTORY(${COMPONENTS}/chroma)
+IF(BUILD_DEMO)
+	ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
+	ADD_SUBDIRECTORY(${COMPONENTS}/gui)
+	ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/demo)
+ENDIF()
