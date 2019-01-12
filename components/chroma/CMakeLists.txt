@@ -41,13 +41,8 @@ INCLUDE_DIRECTORIES(src)
 # we're building a library
 ADD_LIBRARY(${TARGET} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
 TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
+TARGET_LINK_LIBRARIES(${TARGET} PUBLIC math utils)
 ADD_DEPENDENCIES(${TARGET} resc)
-
-# ===============================================
-# Dependencies
-# ===============================================
-TARGET_LINK_LIBRARIES(${TARGET} PUBLIC math)
-TARGET_LINK_LIBRARIES(${TARGET} PUBLIC utils)
 
 # ===============================================
 # Compiler flags
@@ -76,7 +71,6 @@ TARGET_COMPILE_OPTIONS(${TARGET} PRIVATE
 SET(INSTALL_TYPE ARCHIVE)
 INSTALL(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib/${DIST_DIR})
 INSTALL(DIRECTORY ${PUBLIC_HDR_DIR}/chroma DESTINATION include)
-INSTALL(FILES "README.md" DESTINATION .)
 
 # ===============================================
 # Sub-projects

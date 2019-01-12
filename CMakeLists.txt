@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT(chroma)
 
-OPTION(BUILD_DEMO "Build demo application" ON)
+OPTION(BUILD_APPS "Build applications" ON)
 
 IF (WIN32)
     # Link statically against c/c++ lib to avoid missing redistriburable such as "VCRUNTIME140.dll not found."
@@ -62,6 +62,11 @@ IF (LINUX)
     IF (CMAKE_BUILD_TYPE STREQUAL "Release")
         LINK_LIBRARIES("-static-libgcc -static-libstdc++")
     ENDIF()
+	
+	FIND_PACKAGE(X11)
+	IF(NOT X11_FOUND)
+		SET(BUILD_APPS OFF)
+	ENDIF()
 ENDIF()
 
 IF (APPLE)
@@ -131,8 +136,8 @@ ADD_SUBDIRECTORY(${TOOLS}/resc)
 ADD_SUBDIRECTORY(${COMPONENTS}/math)
 ADD_SUBDIRECTORY(${COMPONENTS}/utils)
 ADD_SUBDIRECTORY(${COMPONENTS}/chroma)
-IF(BUILD_DEMO)
+IF(BUILD_APPS)
 	ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
 	ADD_SUBDIRECTORY(${COMPONENTS}/gui)
-	ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/demo)
+	ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/apps/viewer)
 ENDIF()
