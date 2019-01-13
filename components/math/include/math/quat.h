@@ -13,113 +13,113 @@
 namespace math {
 namespace details {
 
-template <typename T>
-class MATH_EMPTY_BASES Quaternion :
-    public VectorAddOperators<Quaternion, T>,
-    public VectorUnaryOperators<Quaternion, T>,
-    public VectorComparisonOperators<Quaternion, T>,
-    public QuaternionProductOperators<Quaternion, T>,
-    public QuaternionFunctions<Quaternion, T>,
-    public QuaternionDebug<Quaternion, T> {
-public:
-    enum no_init { NO_INIT };
-    typedef T value_type;
-    typedef T& reference;
-    typedef T const& const_reference;
-    typedef size_t size_type;
+    template <typename T>
+    class MATH_EMPTY_BASES Quaternion :
+        public VectorAddOperators<Quaternion, T>,
+        public VectorUnaryOperators<Quaternion, T>,
+        public VectorComparisonOperators<Quaternion, T>,
+        public QuaternionProductOperators<Quaternion, T>,
+        public QuaternionFunctions<Quaternion, T>,
+        public QuaternionDebug<Quaternion, T> {
+    public:
+        enum no_init { NO_INIT };
+        typedef T value_type;
+        typedef T& reference;
+        typedef T const& const_reference;
+        typedef size_t size_type;
 
-    /*
-     * quaternion internals stored as:
-     *
-     * q = w + xi + yj + zk
-     *
-     *  q[0] = x;
-     *  q[1] = y;
-     *  q[2] = z;
-     *  q[3] = w;
-     *
-     */
-    union {
-        struct { T x, y, z, w; };
-        Vector4<T> xyzw;
-        Vector3<T> xyz;
-        Vector2<T> xy;
-    };
+        /*
+         * quaternion internals stored as:
+         *
+         * q = w + xi + yj + zk
+         *
+         *  q[0] = x;
+         *  q[1] = y;
+         *  q[2] = z;
+         *  q[3] = w;
+         *
+         */
+        union {
+            struct { T x, y, z, w; };
+            Vector4<T> xyzw;
+            Vector3<T> xyz;
+            Vector2<T> xy;
+        };
 
-    enum { SIZE = 4 };
+        enum { SIZE = 4 };
 
-    inline constexpr static
-    size_type
-    size() { 
-        return SIZE;
-    }
+        inline constexpr static
+        size_type
+        size() { 
+            return SIZE;
+        }
 
-    inline constexpr
-    T const&
-    operator[](size_t i) const {
-        assert(i < SIZE);
-        return (&x)[i];
-    }
+        inline constexpr
+        T const&
+        operator[](size_t i) const {
+            assert(i < SIZE);
+            return (&x)[i];
+        }
 
-    inline constexpr
-    T&
-    operator[](size_t i) {
-        assert(i < SIZE);
-        return (&x)[i];
-    }
+        inline constexpr
+        T&
+        operator[](size_t i) {
+            assert(i < SIZE);
+            return (&x)[i];
+        }
 
-    Quaternion(const Quaternion&) = default;
-    ~Quaternion() = default;
-    Quaternion& operator = (const Quaternion&) = default;
+        Quaternion(const Quaternion&) = default;
+        ~Quaternion() = default;
+        Quaternion& operator = (const Quaternion&) = default;
 
-    explicit constexpr
-    Quaternion(no_init) {}
+        explicit constexpr
+        Quaternion(no_init) {}
     
-    constexpr
-    Quaternion() 
-        : x(0), y(0), z(0), w(0) {}
+        constexpr
+        Quaternion() 
+            : x(0), y(0), z(0), w(0) {}
 
-    template<typename A>
-    constexpr
-    Quaternion(A w) 
-        : x(0), y(0), z(0), w(w) {
-        static_assert(std::is_arithmetic<A>::value, "requires arithmetic type");
-    }
+        template<typename A>
+        constexpr
+        Quaternion(A w) 
+            : x(0), y(0), z(0), w(w) {
+            static_assert(std::is_arithmetic<A>::value, "requires arithmetic type");
+        }
 
-    // initialize from 4 values to w + xi + yj + zk
-    template<typename A, typename B, typename C, typename D>
-    constexpr
-    Quaternion(A w, B x, C y, D z) : x(x), y(y), z(z), w(w) {}
+        // initialize from 4 values to w + xi + yj + zk
+        template<typename A, typename B, typename C, typename D>
+        constexpr
+        Quaternion(A w, B x, C y, D z) : x(x), y(y), z(z), w(w) {}
 
-    template<typename A, typename B>
-    constexpr
-    Quaternion(const Vector3<A>& v, B w) 
-        : x(v.x), y(v.y), z(v.z), w(w) {}
+        template<typename A, typename B>
+        constexpr
+        Quaternion(const Vector3<A>& v, B w) 
+            : x(v.x), y(v.y), z(v.z), w(w) {}
 
-    template<typename A>
-    constexpr explicit 
-    Quaternion(const Vector4<A>& v)
-        : x(v.x), y(v.y), z(v.z), w(v.w) {}
+        template<typename A>
+        constexpr explicit 
+        Quaternion(const Vector4<A>& v)
+            : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
-    template<typename A>
-    constexpr explicit
-    Quaternion(const Quaternion<A>& v) 
-        : x(v.x), y(v.y), z(v.z), w(v.w) {}
+        template<typename A>
+        constexpr explicit
+        Quaternion(const Quaternion<A>& v) 
+            : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
-    // conjugate operator
-    constexpr 
-    Quaternion
-    operator~() const {
-        return conj(*this);
-    }
+        // conjugate operator
+        constexpr 
+        Quaternion
+        operator~() const {
+            return conj(*this);
+        }
 
-    template <typename A, typename B>
-    constexpr static MATH_PURE
-    Quaternion 
-    from_axis_angle(const Vector3<A>& axis, B angle) {
-        return Quaternion(std::sin(angle*0.5) * normalize(axis), std::cos(angle*0.5));
-    }
-};
+        template <typename A, typename B>
+        constexpr static MATH_PURE
+        Quaternion 
+        from_axis_angle(const Vector3<A>& axis, B angle) {
+            return Quaternion(std::sin(angle*0.5) * normalize(axis), std::cos(angle*0.5));
+        }
+    };
 
 }  // namespace details
 

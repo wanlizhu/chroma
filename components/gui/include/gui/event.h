@@ -17,54 +17,54 @@
 
 namespace gui {
 
-enum EventEnum {
-    MOUSE_LEFT,
-    MOUSE_RIGHT,
-    ACTION_DOWN,
-    ACTION_UP,
-    ACTION_DOUBLE,
-    ACTION_HOLD,
-    MOD_CTRL,
-    MOD_SHIFT,
-    MOD_ALT,
-    KEY_ESC,
-    KEY_ENTER,
-};
+    enum EventEnum {
+        MOUSE_LEFT,
+        MOUSE_RIGHT,
+        ACTION_DOWN,
+        ACTION_UP,
+        ACTION_DOUBLE,
+        ACTION_HOLD,
+        MOD_CTRL,
+        MOD_SHIFT,
+        MOD_ALT,
+        KEY_ESC,
+        KEY_ENTER,
+    };
 
-struct IEvent {
-    virtual ~IEvent() = default;
-};
+    struct IEvent {
+        virtual ~IEvent() = default;
+    };
 
-struct MouseEvent : public IEvent {
-    struct {
-        bool valid = false;
-        double x, y;
-    } wheel, move;
+    struct MouseEvent : public IEvent {
+        struct {
+            bool valid = false;
+            double x, y;
+        } wheel, move;
 
-    struct {
-        bool valid = false;
-        int id;
+        struct {
+            bool valid = false;
+            int id;
+            int action;
+            int mods = 0;
+        } button;
+
+
+        virtual ~MouseEvent() = default;
+    };
+
+    struct KeyEvent : public IEvent {
+        int key = 0;
         int action;
         int mods = 0;
-    } button;
 
+        virtual ~KeyEvent() = default;
+    };
 
-    virtual ~MouseEvent() = default;
-};
+    struct DropEvent : public IEvent {
+        std::vector<std::string> paths;
 
-struct KeyEvent : public IEvent {
-    int key = 0;
-    int action;
-    int mods = 0;
-
-    virtual ~KeyEvent() = default;
-};
-
-struct DropEvent : public IEvent {
-	std::vector<std::string> paths;
-
-	virtual ~DropEvent() = default;
-};
+        virtual ~DropEvent() = default;
+    };
 
 }
 

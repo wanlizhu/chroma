@@ -18,16 +18,16 @@ FILE(GLOB_RECURSE RES_LIST resources/*)
 
 # Embed the binary resource blob and materials.
 IF(RES_LIST)
-	FILE(MAKE_DIRECTORY ${GENERATION_DIR})
-	
+    FILE(MAKE_DIRECTORY ${GENERATION_DIR})
+    
     ADD_CUSTOM_COMMAND(
             OUTPUT ${RESOURCES_BIN_HDR}
             COMMAND resc -o ${RESOURCES_BIN_HDR} "${CMAKE_CURRENT_SOURCE_DIR}/resources"
             DEPENDS resc
             COMMENT "Compiling resources folder to '${output_path}'")
-			
-	LIST(APPEND PRIVATE_HDRS ${RESOURCES_BIN_HDR})
-	LIST(APPEND SRCS ${RESOURCES_BIN_SRC})
+            
+    LIST(APPEND PRIVATE_HDRS ${RESOURCES_BIN_HDR})
+    LIST(APPEND SRCS ${RESOURCES_BIN_SRC})
 ENDIF()
 
 # ===============================================
