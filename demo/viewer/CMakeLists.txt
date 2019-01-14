@@ -14,7 +14,7 @@ FILE(GLOB_RECURSE SRCS src/*.cpp)
 # Add target definition
 # ===============================================
 ADD_EXECUTABLE(${TARGET} ${HDRS} ${SRCS})
-TARGET_LINK_LIBRARIES(${TARGET} math utils gui chroma)
+TARGET_LINK_LIBRARIES(${TARGET} math utils display chroma)
 
 # ===============================================
 # Installation

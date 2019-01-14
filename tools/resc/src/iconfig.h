@@ -5,18 +5,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <memory>
 
 namespace resc {
 
     class IConfig {
     public:
         enum class Mode {
-            RESOURCE,
-        };
-
-        enum class OutputFormat {
-            C_HDR_SRC,
-            BLOB,
+            BINARY,
+            SHADER,
         };
 
         class IInput {
@@ -40,18 +37,16 @@ namespace resc {
     public:
 
         virtual ~IConfig() = default;
-        virtual IInput* input() const noexcept = 0;
-        virtual IOutput* output() const noexcept = 0;
+        virtual std::shared_ptr<IInput> input() const noexcept = 0;
+        virtual std::shared_ptr<IOutput> output() const noexcept = 0;
         virtual std::string to_string() const noexcept = 0;
 
         bool is_valid() const noexcept;
         bool mode() const noexcept;
-        OutputFormat output_format() const noexcept;
 
     protected:
         bool m_valid = true;
-        Mode m_mode = Mode::RESOURCE;
-        OutputFormat m_outformat = OutputFormat::C_HDR_SRC;
+        Mode m_mode = Mode::BINARY;
     };
 }
 

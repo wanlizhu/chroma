@@ -114,8 +114,6 @@ Path Path::parent() const {
 
     std::vector<std::string> segments(split());
 
-    // if our path is absolute with a single segment,
-    // be sure to keep the prefix component
     if (!is_absolute() || segments.size() > 1) {
         segments.pop_back(); // peel the last one
     }
@@ -205,8 +203,7 @@ std::string Path::canonical(const std::string& path) {
 
     // If the path starts with a / we must preserve it
     bool starts_with_slash = path.front() == SEPARATOR;
-    // If the path does not end with a / we need to remove the
-    // extra / added by the join process
+    // If the path does not end with a / we need to remove the extra / added by the join process
     bool ends_with_slash = path.back() == SEPARATOR;
 
     size_t current;

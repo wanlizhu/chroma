@@ -4,6 +4,8 @@
 #include "iconfig.h"
 #include "commandline_input.h"
 #include "commandline_output.h"
+#include <vector>
+#include <string>
 
 namespace resc {
 
@@ -12,8 +14,8 @@ public:
     CommandLineConfig(int argc, char** argv);
     virtual ~CommandLineConfig();
 
-    virtual IInput* input() const noexcept override;
-    virtual IOutput* output() const noexcept override;
+    virtual std::shared_ptr<IInput> input() const noexcept override;
+    virtual std::shared_ptr<IOutput> output() const noexcept override;
     virtual std::string to_string() const noexcept override;
 
 private:
@@ -21,9 +23,9 @@ private:
 
 private:
     int m_argc = 0;
-    char** argv = nullptr;
-    FileInput* m_input = nullptr;
-    FileOutput* m_output = nullptr;
+    char** m_argv = nullptr;
+    std::shared_ptr<FileInput> m_input;
+    std::shared_ptr<FileOutput> m_output;
 };
 
 }

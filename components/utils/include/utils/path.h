@@ -25,8 +25,8 @@ public:
     inline bool is_empty() const { return m_path.empty(); }
     inline const char* c_str() const { return m_path.c_str(); }
 
-    inline void set(const std::string& pathname) { m_path = canonical(pathname); }
-    inline const std::string& get() const { return m_path; }
+    inline void set(const std::string& pathname) noexcept { m_path = canonical(pathname); }
+    inline const std::string& get() const noexcept { return m_path; }
     Path parent() const;
     Path ancestor(int n) const;
 
@@ -41,9 +41,9 @@ public:
     Path concat(const Path& path) const;
     void concat_to_self(const Path& path);
 
-    inline operator std::string const&() const { return m_path; }
-    inline Path operator+(const Path& rhs) const { return concat(rhs); }
-    inline Path& operator+=(const Path& rhs) {
+    inline operator std::string const&() const noexcept { return m_path; }
+    inline Path operator+(const Path& rhs) const noexcept { return concat(rhs); }
+    inline Path& operator+=(const Path& rhs) noexcept {
         concat_to_self(rhs);
         return *this;
     }

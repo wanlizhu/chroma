@@ -1,4 +1,4 @@
-prefix=C:/Users/Wanli/Desktop/chroma.install
+prefix=C:/Program Files/chroma
 exec_prefix=${prefix}
 includedir=${prefix}/include
 libdir=${exec_prefix}/lib
