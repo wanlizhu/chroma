@@ -1,4 +1,4 @@
-#include <gui/window.h>
+#include <display/window.h>
 
 using namespace gui;
 using namespace math;

@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT(chroma)
 
-OPTION(BUILD_DEMO "Build applications" ON)
+OPTION(BUILD_DEMO "Build demo." ON)
 
 IF (WIN32)
     # Link statically against c/c++ lib to avoid missing redistriburable such as "VCRUNTIME140.dll not found."
@@ -36,10 +36,9 @@ ENDIF()
 # ===============================================
 #  Paths
 # ===============================================
-SET(EXTERNAL ${CMAKE_CURRENT_SOURCE_DIR}/third_party)
-SET(COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/components)
+SET(EXTERNAL ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
+SET(GLOBAL ${CMAKE_CURRENT_SOURCE_DIR}/global)
 SET(TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/tools)
-SET(SHADERS ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
 SET(ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
 
 # ===============================================
@@ -133,11 +132,11 @@ ADD_SUBDIRECTORY(${EXTERNAL}/benchmark/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/glad/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/getopt)
 ADD_SUBDIRECTORY(${TOOLS}/resc)
-ADD_SUBDIRECTORY(${COMPONENTS}/math)
-ADD_SUBDIRECTORY(${COMPONENTS}/utils)
-ADD_SUBDIRECTORY(${COMPONENTS}/chroma)
+ADD_SUBDIRECTORY(${GLOBAL}/math)
+ADD_SUBDIRECTORY(${GLOBAL}/utils)
+ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/src)
 IF(BUILD_DEMO)
     ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
-    ADD_SUBDIRECTORY(${COMPONENTS}/display)
+    ADD_SUBDIRECTORY(${GLOBAL}/display)
     ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/demo/viewer)
 ENDIF()
