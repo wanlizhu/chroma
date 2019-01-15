@@ -16,6 +16,9 @@ public:
         COHERENT,
     };
 
+    static IDeviceBuffer* create(const void* data, size_t size_, Type type);
+    static void destroy(IDeviceBuffer* instance);
+
     virtual size_t size() const noexcept = 0;
     virtual bool is_coherent() const noexcept = 0;
     virtual bool read(size_t offset, size_t size_, void* dst) const noexcept = 0;

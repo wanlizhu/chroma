@@ -14,41 +14,22 @@
 
 namespace chroma {
     
-class IDevice 
-    : public IDeviceAttribute
-    , public std::enable_shared_from_this<IDevice> {
+class IDevice : public IDeviceAttribute {
 public:
     static IDevice* create();
     static void destroy(IDevice* device);
 
-    inline IDeviceProgram*& current_program() noexcept { return m_current_program; }
-    inline IBlendState*& blend_state() noexcept { return m_blend_state; }
-    inline IDepthState*& depth_state() noexcept { return m_depth_state; }
-    inline IRasterState*& raster_state() noexcept { return m_raster_state; }
-    inline ISamplerState*& sampler_state() noexcept { return m_sampler_state; }
-
-    inline int target_count() const noexcept { return static_cast<int>(m_targets.size()); }
-    inline int program_count() const noexcept { return static_cast<int>(m_targets.size()); }
-    inline int buffer_count() const noexcept { return static_cast<int>(m_targets.size()); }
-    inline int texture_count() const noexcept { return static_cast<int>(m_targets.size()); }
+    virtual void install(IDeviceProgram* program) noexcept = 0;
+    virtual IBlendState* blend_state() noexcept = 0;
+    virtual IDepthState* depth_state() noexcept = 0;
+    virtual IRasterState* raster_state() noexcept = 0;
+    virtual ISamplerState* sampler_state() noexcept = 0;
 
 protected:
     IDevice() = default;
     IDevice(const IDevice&) = default;
     IDevice& operator=(const IDevice&) = default;
     virtual ~IDevice() = default;
-
-protected:
-    IDeviceProgram* m_current_program;
-    IBlendState* m_blend_state;
-    IDepthState* m_depth_state;
-    IRasterState* m_raster_state;
-    ISamplerState* m_sampler_state;
-
-    std::vector<IDeviceTarget*> m_targets;
-    std::vector<IDeviceProgram*> m_programs;
-    std::vector<IDeviceBuffer*> m_buffers;
-    std::vector<IDeviceTexture*> m_textures;
 };
 
 }
