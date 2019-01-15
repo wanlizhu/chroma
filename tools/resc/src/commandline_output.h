@@ -8,7 +8,7 @@ namespace resc {
 class FileOutput : public IConfig::IOutput {
 public:
     explicit FileOutput(const char* path);
-    virtual ~FileOutput() {}
+    virtual ~FileOutput();
 
     virtual bool open() noexcept override;
     virtual bool close() noexcept override;

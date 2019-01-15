@@ -1,12 +1,12 @@
-#include "resource_compiler.h"
+#include "shader_compiler.h"
 
 using namespace resc;
 
-ResourceCompiler::ResourceCompiler() {
-    m_processors[IConfig::Mode::BINARY] = &ResourceCompiler::process_bin;
+ShaderCompiler::ShaderCompiler() {
+    m_processors[IConfig::Mode::SHADER] = &ShaderCompiler::process_shader;
 }
 
-bool ResourceCompiler::run(const IConfig* config) {
+bool ShaderCompiler::run(const IConfig* config) {
     if (m_processors.find(config->mode()) == m_processors.end())
         return false;
 
@@ -15,9 +15,9 @@ bool ResourceCompiler::run(const IConfig* config) {
     return true;
 }
 
-bool ResourceCompiler::check(const IConfig* config) {
-    if (config->mode() != IConfig::Mode::BINARY) {
-        std::cerr << "Wrong working mode, [binary] mode required." << std::endl;
+bool ShaderCompiler::check(const IConfig* config) {
+    if (config->mode() != IConfig::Mode::SHADER) {
+        std::cerr << "Wrong working mode, [shader] mode required." << std::endl;
         return false;
     }
 
@@ -29,7 +29,7 @@ bool ResourceCompiler::check(const IConfig* config) {
     return true;
 }
 
-bool ResourceCompiler::process_bin(const IConfig* config) const noexcept {
+bool ShaderCompiler::process_shader(const IConfig* config) const noexcept {
     size_t size = config->input()->open();
     if (size == 0) return false;
     std::unique_ptr<const char[]> in = config->input()->read();

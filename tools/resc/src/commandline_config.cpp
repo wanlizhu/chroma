@@ -17,9 +17,10 @@ static void usage() {
         << "       Print this message\n\n"
         << "   --output, -o\n"
         << "       Specify path to output file\n\n"
+        << "   --include, -i\n"
+        << "       Specify path to find included shaders\n\n"
         << "   --mode, -o\n"
         << "       Specify the compile mode [binary|shader]";
-
 }
 
 } // namespace details
@@ -51,10 +52,19 @@ std::string CommandLineConfig::to_string() const noexcept {
     return parameters;
 }
 
+bool CommandLineConfig::has_opt(char opt) const noexcept {
+    return m_options.find(opt) != m_options.end();
+}
+
+std::string CommandLineConfig::get_opt(char opt) const noexcept {
+    return m_options.at(opt);
+}
+
 bool CommandLineConfig::parse() {
-    static constexpr const char* OPTSTR = "ho:m:";
+    static constexpr const char* OPTSTR = "hi:o:m:";
     static const struct option OPTIONS[] = {
         {"help", no_argument, nullptr, 'h'},
+        {"include", required_argument, nullptr, 'i'},
         {"output", required_argument, nullptr, 'o'},
         {"mode", required_argument, nullptr, 'm'},
         { nullptr, 0, nullptr, 0 }
@@ -66,28 +76,31 @@ bool CommandLineConfig::parse() {
     while ((opt = getopt_long(m_argc, m_argv, OPTSTR, OPTIONS, &option_index)) >= 0) {
         std::string arg(optarg ? optarg : "");
         switch (opt) {
-            default:
             case 'h':
-            details::usage();
-            exit(0);
-            break;
+                details::usage();
+                exit(0);
+                break;
 
             case 'm':
-            if (arg == "binary") {
-                m_mode = Mode::BINARY;
-            } 
-            else if (arg == "shader") {
-                m_mode = Mode::SHADER;
-            }
-            else {
-                std::cerr << "Unrecognized mode option. Must be 'binary'|'shader'." << std::endl;
-                return false;
-            }
-            break;
+                if (arg == "binary") {
+                    m_mode = Mode::BINARY;
+                } 
+                else if (arg == "shader") {
+                    m_mode = Mode::SHADER;
+                }
+                else {
+                    std::cerr << "Unrecognized mode option. Must be 'binary'|'shader'." << std::endl;
+                    return false;
+                }
+                break;
 
             case 'o':
-            m_output = std::make_shared<FileOutput>(arg.c_str());
-            break;
+                m_output = std::make_shared<FileOutput>(arg.c_str());
+                break;
+
+            default:
+                m_options[opt] = arg;
+                break;
         }
     }
 

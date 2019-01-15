@@ -6,6 +6,7 @@
 #include "commandline_output.h"
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 namespace resc {
 
@@ -17,6 +18,8 @@ public:
     virtual std::shared_ptr<IInput> input() const noexcept override;
     virtual std::shared_ptr<IOutput> output() const noexcept override;
     virtual std::string to_string() const noexcept override;
+    bool has_opt(char opt) const noexcept;
+    std::string get_opt(char opt) const noexcept;
 
 private:
     bool parse();
@@ -26,6 +29,7 @@ private:
     char** m_argv = nullptr;
     std::shared_ptr<FileInput> m_input;
     std::shared_ptr<FileOutput> m_output;
+    std::unordered_map<char, std::string> m_options;
 };
 
 }

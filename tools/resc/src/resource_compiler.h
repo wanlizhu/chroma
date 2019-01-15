@@ -10,7 +10,7 @@
 namespace resc {
     
 class ResourceCompiler final : public ICompiler {
-    using ResourceProcessor = bool (ResourceCompiler::*)(const char*, size_t) const;
+    using ResourceProcessor = bool (ResourceCompiler::*)(const IConfig*) const;
 public:
     ResourceCompiler();
 
@@ -18,11 +18,10 @@ public:
     virtual bool check(const IConfig* config) override;
 
 private:
-    bool process_bin(const char* data, size_t size) const noexcept;
-    bool process_shader(const char* data, size_t size) const noexcept;
+    bool process_bin(const IConfig* config) const noexcept;
 
 private:
-    std::unordered_map<std::string, ResourceProcessor> m_processors; 
+    std::unordered_map<IConfig::Mode, ResourceProcessor> m_processors; 
 };
 
 }

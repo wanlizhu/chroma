@@ -8,7 +8,7 @@ namespace resc {
 class FileInput : public IConfig::IInput {
 public:
     explicit FileInput(const char* path);
-    virtual ~FileInput() {}
+    virtual ~FileInput();
 
     virtual size_t open() noexcept override;
     virtual bool close() noexcept override;

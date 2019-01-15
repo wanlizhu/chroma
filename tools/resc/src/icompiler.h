@@ -14,7 +14,7 @@ public:
 protected:
     virtual bool run(const IConfig* config) = 0;
     virtual bool check(const IConfig* config) = 0;
-    bool write(const IConfig* config);
+    bool write(const IConfig* config, const void* data, size_t size);
 };
 
 }

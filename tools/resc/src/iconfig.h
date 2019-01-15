@@ -41,8 +41,8 @@ namespace resc {
         virtual std::shared_ptr<IOutput> output() const noexcept = 0;
         virtual std::string to_string() const noexcept = 0;
 
-        bool is_valid() const noexcept;
-        bool mode() const noexcept;
+        inline bool is_valid() const noexcept { return m_valid; }
+        inline Mode mode() const noexcept { return m_mode; }
 
     protected:
         bool m_valid = true;
