@@ -30,7 +30,7 @@
 
 
 #if defined(_GLFW_USE_CONFIG_H)
- #include "glfw_config.h"
+ #include "GLFW_config.h"
 #endif
 
 #if defined(GLFW_INCLUDE_GLCOREARB) || \

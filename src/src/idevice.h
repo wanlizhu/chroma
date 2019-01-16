@@ -16,6 +16,8 @@ namespace chroma {
     
 class IDevice : public IDeviceAttribute {
 public:
+    typedef IDeviceBuffer Buffer;
+
     static IDevice* create();
     static void destroy(IDevice* device);
 
@@ -25,12 +27,6 @@ public:
     virtual IDepthState* depth_state() noexcept = 0;
     virtual IRasterState* raster_state() noexcept = 0;
     virtual ISamplerState* sampler_state() noexcept = 0;
-
-protected:
-    IDevice() = default;
-    IDevice(const IDevice&) = default;
-    IDevice& operator=(const IDevice&) = default;
-    virtual ~IDevice() = default;
 };
 
 }

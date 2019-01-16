@@ -12,8 +12,8 @@ template<typename ELEMENT, int COMPONENTS_, int STRIDE_,
 class BufferAccessor {
 public:
     enum Attrib {
-        COMPONENTS = COMPONENTS_,
-        STRIDE = STRIDE_,
+        Components = COMPONENTS_,
+        Stride = STRIDE_,
     };
 
     BufferAccessor(IBuffer* buffer, size_t offset_, size_t size)

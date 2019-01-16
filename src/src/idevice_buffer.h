@@ -12,15 +12,15 @@ class IDevice;
 class IDeviceBuffer : public IBuffer, public IDeviceResource {
 public:
     enum Type {
-        STATIC_DRAW,
-        DYNAMIC_DRAW,
-        STORAGE,
+        StaticDraw,
+        DynamicDraw,
+        Storage,
     };
     enum MapOption {
-        READ,
-        WRITE,
-        READ_WRITE,
-        COHERENT,
+        Read,
+        Write,
+        ReadWrite,
+        Coherent,
     };
 
     static IDeviceBuffer* create(const void* data, size_t size_, Type type);
@@ -30,12 +30,7 @@ public:
     virtual bool is_mapped() const noexcept = 0;
     virtual char* map(MapOption option) noexcept = 0;
     virtual void unmap() noexcept = 0;
-
-protected:
-    IDeviceBuffer() = default;
-    IDeviceBuffer(const IDeviceBuffer&) = default;
-    IDeviceBuffer& operator=(const IDeviceBuffer&) = default;
-    virtual ~IDeviceBuffer() = default;
+    virtual Type type() const noexcept  0;
 };
 
 }

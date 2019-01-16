@@ -12,11 +12,6 @@ class IDeviceTarget : public std::enable_shared_from_this<IDeviceTarget> {
 public:
     static std::shared_ptr<IDeviceTarget> create(std::shared_ptr<IDevice> device);
 
-protected:
-    IDeviceTarget() = default;
-    IDeviceTarget(const IDeviceTarget&) = default;
-    IDeviceTarget& operator=(const IDeviceTarget&) = default;
-    virtual ~IDeviceTarget() = default;
 };
 
 }

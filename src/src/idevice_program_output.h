@@ -3,20 +3,18 @@
 
 #include <stdint.h>
 #include <memory>
+#include "idevice_program_output_target.h"
+#include "idevice_program_output_swapchain.h"
 
 namespace chroma {
 
 class IDevice;
 
-class IDeviceProgramOutput : public std::enable_shared_from_this<IDeviceProgramOutput> {
+class IDeviceProgramOutput {
 public:
-    static std::shared_ptr<IDeviceProgramOutput> create(std::shared_ptr<IDevice> device);
+    typedef IDeviceProgramOutputTarget Target;
+    typedef IDeviceProgramOutputSwapChain SwapChain;
 
-protected:
-    IDeviceProgramOutput() = default;
-    IDeviceProgramOutput(const IDeviceProgramOutput&) = default;
-    IDeviceProgramOutput& operator=(const IDeviceProgramOutput&) = default;
-    virtual ~IDeviceProgramOutput() = default;
 };
 
 }
