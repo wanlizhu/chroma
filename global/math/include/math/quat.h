@@ -15,6 +15,7 @@ namespace details {
 
     template <typename T>
     class MATH_EMPTY_BASES Quaternion :
+        public GPUDeviceCompatible,
         public VectorAddOperators<Quaternion, T>,
         public VectorUnaryOperators<Quaternion, T>,
         public VectorComparisonOperators<Quaternion, T>,

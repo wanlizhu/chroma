@@ -4,7 +4,7 @@
 #include "idevice_buffer.h"
 #include <type_traits>
 
-namespace chroma {
+namespace chroma { namespace device {
 
 template<typename ELEMENT, int COMPONENTS_, int STRIDE_,
          typename = std::enable_if<std::is_integral<ELEMENT>::value 
@@ -49,6 +49,6 @@ protected:
     const void* m_end = nullptr;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

@@ -6,13 +6,14 @@
 #include <string>
 #include "idevice_resource.h"
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDevice;
 
 class IDeviceProgramInputSlot {
 public:
     enum InputSlotType {
+        UndefinedSlot,
         ConstantBufferSlot, // aka. UniformBuffer
         ShaderIOBufferSlot,
         VertexAttributeSlot,
@@ -30,6 +31,6 @@ public:
     virtual IDeviceResource* resource() noexcept = 0;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

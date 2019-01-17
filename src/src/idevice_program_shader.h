@@ -5,7 +5,7 @@
 #include "idevice_resource.h"
 #include <utils/path.h>
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDeviceProgramShader : public IDeviceResource {
 public:
@@ -28,6 +28,6 @@ public:
     virtual std::string compile_error() const noexcept = 0;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

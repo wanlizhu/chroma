@@ -1,9 +1,9 @@
-#ifndef CHROMA_IDEVICE_STATE_H
-#define CHROMA_IDEVICE_STATE_H
+#ifndef CHROMA_IDEVICE_STATES_H
+#define CHROMA_IDEVICE_STATES_H
 
 #include <stdint.h>
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDeviceState {
     virtual ~IDeviceState() = default;
@@ -32,6 +32,6 @@ protected:
     virtual ~ISamplerState() = default;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

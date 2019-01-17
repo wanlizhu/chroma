@@ -3,20 +3,15 @@
 
 #include <stdint.h>
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDeviceResource {
 public:
     enum ResourceType {
-        Undefined,
-        VertexBuffer,
-        IndexBuffer,
-        RenderBuffer,
-        ShaderIOBuffer,
-        ConstantBuffer,
-        Texture2D,
-        TextureCubeMap,
-        SamplerObject
+        UndefinedResource,
+        BufferResource,
+        TextureResource,
+        SamplerResource
     };
 
     inline int id() const noexcept { return m_id; }
@@ -33,10 +28,10 @@ protected:
     inline void set_id(int id_) noexcept { m_id = id_; }
 
 private:
-    ResourceType m_type = ResourceType::Undefined;
+    ResourceType m_type = ResourceType::UndefinedResource;
     int m_id = -1;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

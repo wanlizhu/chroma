@@ -48,4 +48,9 @@
 #   endif
 #endif // _MSC_VER
 
+namespace math {
+
+struct GPUDeviceCompatible {};
+
+}
 #endif

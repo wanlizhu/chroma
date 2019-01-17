@@ -5,7 +5,7 @@
 #include "idevice_resource.h"
 #include "ibuffer.h"
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDevice;
 
@@ -30,9 +30,9 @@ public:
     virtual bool is_mapped() const noexcept = 0;
     virtual char* map(MapOption option) noexcept = 0;
     virtual void unmap() noexcept = 0;
-    virtual Type type() const noexcept  0;
+    virtual Type type() const noexcept = 0;
 };
 
-}
+}} // namespace chroma -> device 
 
 #endif

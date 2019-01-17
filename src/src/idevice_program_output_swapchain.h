@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <memory>
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDevice;
 
@@ -13,6 +13,6 @@ public:
 
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

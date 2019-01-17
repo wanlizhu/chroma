@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IBuffer {
 public:
@@ -17,6 +17,6 @@ public:
     virtual bool write(size_t offset, size_t size_, const void* src) noexcept = 0;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

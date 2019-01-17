@@ -3,17 +3,18 @@
 
 #include <stdint.h>
 #include <memory>
+#include "idevice_resource.h"
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDevice;
 
-class IDeviceTarget : public std::enable_shared_from_this<IDeviceTarget> {
+class IDeviceTarget : public IDeviceResource {
 public:
-    static std::shared_ptr<IDeviceTarget> create(std::shared_ptr<IDevice> device);
+    static IDeviceTarget* create();
 
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

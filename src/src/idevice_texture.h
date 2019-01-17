@@ -3,17 +3,18 @@
 
 #include <stdint.h>
 #include <memory>
+#include "idevice_texture_sampler.h"
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDevice;
 
-class IDeviceTexture : public std::enable_shared_from_this<IDeviceTexture> {
+class IDeviceTexture : public IDeviceResource {
 public:
-    static std::shared_ptr<IDeviceTexture> create(std::shared_ptr<IDevice> device);
+    static IDeviceTexture* create();
 
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

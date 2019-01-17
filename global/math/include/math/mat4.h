@@ -20,6 +20,7 @@ class Quaternion;
 
 template<typename T>
 class MATH_EMPTY_BASES Matrix44 :
+    public GPUDeviceCompatible,
     public VectorUnaryOperators<Matrix44, T>,
     public VectorComparisonOperators<Matrix44, T>,
     public VectorAddOperators<Matrix44, T>,

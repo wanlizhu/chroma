@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <math/vec2.h>
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDeviceAttribute {
 public:
@@ -23,6 +23,6 @@ public:
     virtual uint32_t max_depth() const noexcept = 0;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif

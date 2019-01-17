@@ -14,6 +14,7 @@ namespace details {
 
 template<typename T>
 class MATH_EMPTY_BASES Matrix33 :
+    public GPUDeviceCompatible,
     public VectorUnaryOperators<Matrix33, T>,
     public VectorComparisonOperators<Matrix33, T>,
     public VectorAddOperators<Matrix33, T>,

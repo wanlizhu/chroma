@@ -12,6 +12,7 @@ namespace details {
 
     template<typename T>
     class MATH_EMPTY_BASES Matrix22 :
+        public GPUDeviceCompatible,
         public VectorUnaryOperators<Matrix22, T>,
         public VectorComparisonOperators<Matrix22, T>,
         public VectorAddOperators<Matrix22, T>,

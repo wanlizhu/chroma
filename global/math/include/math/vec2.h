@@ -13,6 +13,7 @@ namespace details {
 
 template <typename T>
 class MATH_EMPTY_BASES Vector2 :
+    public GPUDeviceCompatible,
     public VectorProductOperators<Vector2, T>,
     public VectorAddOperators<Vector2, T>,
     public VectorUnaryOperators<Vector2, T>,

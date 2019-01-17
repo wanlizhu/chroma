@@ -7,7 +7,7 @@
 #include "idevice_program_output.h"
 #include "idevice_program_shader.h"
 
-namespace chroma {
+namespace chroma { namespace device {
 
 class IDevice;
 
@@ -20,9 +20,10 @@ public:
     typedef Output::Target Target;
     typedef Output::SwapChain SwapChain;
 
-    static IDeviceProgram* create(Input::Schema schema);
+    static IDeviceProgram* create(Input::Schema schema, const std::string& name_);
     static void destroy(IDeviceProgram* instance);
 
+    virtual std::string name() const noexcept = 0;
     virtual void set_shader(Shader* shader) noexcept = 0;
     virtual bool build() noexcept = 0;
     virtual std::string build_error() const noexcept = 0;
@@ -30,6 +31,6 @@ public:
     virtual Output* output() noexcept = 0;
 };
 
-}
+}} // namespace chroma -> device
 
 #endif
