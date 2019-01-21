@@ -15,8 +15,7 @@ FILE(GLOB_RECURSE SRCS src/*.cpp)
 # ===============================================
 ADD_EXECUTABLE(${TARGET} ${HDRS} ${SRCS})
 SET_TARGET_PROPERTIES(${TARGET} PROPERTIES FOLDER Demo)
-TARGET_LINK_LIBRARIES(${TARGET} math utils display chroma)
-ADD_DEPENDENCIES(${TARGET} assets)
+TARGET_LINK_LIBRARIES(${TARGET} math utils display libchroma)
 
 # ===============================================
 # Installation

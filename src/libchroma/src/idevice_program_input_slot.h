@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <memory>
 #include <string>
-#include "idevice_resource.h"
+#include "device_resource.h"
 
 namespace chroma { namespace device {
 
@@ -27,8 +27,8 @@ public:
     virtual bool is_valid() const noexcept = 0;
     virtual Type type() const noexcept = 0;
     virtual std::string name() const noexcept = 0;
-    virtual bool connect(IDeviceResource* resource) noexcept = 0;
-    virtual IDeviceResource* resource() noexcept = 0;
+    virtual bool connect(DeviceResource* resource) noexcept = 0;
+    virtual DeviceResource* resource() noexcept = 0;
 };
 
 }} // namespace chroma -> device

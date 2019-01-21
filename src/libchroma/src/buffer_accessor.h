@@ -13,7 +13,7 @@ class BufferAccessor {
 public:
     enum Attrib {
         Components = COMPONENTS_,
-        Stride = STRIDE_,
+        Stride = (STRIDE_ == 0 ? sizeof(ELEMENT) : STRIDE_),
     };
 
     BufferAccessor(IBuffer* buffer, size_t offset_, size_t size)
@@ -32,7 +32,7 @@ public:
             return m_prev;
         }
 
-        m_prev = offset(m_prev, STRIDE_ == 0 ? sizeof(ELEMENT) : STRIDE_);
+        m_prev = offset(m_prev, Attrib::Stride);
         return (m_prev < m_end ? m_prev : nullptr);
     }
 
