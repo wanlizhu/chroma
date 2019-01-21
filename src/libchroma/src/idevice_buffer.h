@@ -2,19 +2,20 @@
 #define CHROMA_IDEVICE_BUFFER_H
 
 #include <stdint.h>
-#include "idevice_resource.h"
+#include "device_resource.h"
 #include "ibuffer.h"
 
 namespace chroma { namespace device {
 
 class IDevice;
 
-class IDeviceBuffer : public IBuffer, public IDeviceResource {
+class IDeviceBuffer : public IBuffer, public DeviceResource {
 public:
     enum Type {
-        StaticDraw,
-        DynamicDraw,
-        Storage,
+        VertexBuffer,
+        IndexBuffer,
+        ShaderIOBuffer,
+        ConstantBuffer
     };
     enum Map {
         Read,
@@ -23,7 +24,7 @@ public:
         Coherent,
     };
 
-    static IDeviceBuffer* create(IDevice* device, const void* data, size_t size_, Type type);
+    static IDeviceBuffer* create(Type type, IDevice* device, const void* data, size_t size_);
     static void destroy(IDeviceBuffer* instance);
 
     virtual bool is_coherent() const noexcept = 0;

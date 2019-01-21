@@ -3,17 +3,15 @@
 
 #include <stdint.h>
 #include <memory>
-#include "idevice_resource.h"
-#include "idevice_color_format.h"
+#include "device_resource.h"
+#include "device_color_format.h"
 
 namespace chroma { namespace device {
 
 class IDevice;
 
-class IDeviceTextureSampler : public IDeviceResource {
+class IDeviceTextureSampler : public DeviceResource {
 public:
-    static IDeviceTextureSampler* create(IDevice* device);
-    static void destroy(IDeviceTextureSampler* instance);
 
 };
 

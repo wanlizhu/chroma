@@ -16,8 +16,8 @@ SET(SRCS dummy.cpp)
 # ===============================================
 INCLUDE_DIRECTORIES(${PUBLIC_HDR_DIR})
 ADD_LIBRARY(${TARGET} STATIC ${PUBLIC_HEADERS} ${SRCS})
-
 TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
+SET_TARGET_PROPERTIES(${TARGET} PROPERTIES FOLDER ThirdParty)
 
 # ===============================================
 # Installation

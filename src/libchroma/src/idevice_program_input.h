@@ -12,20 +12,21 @@ namespace chroma { namespace device {
 class IDevice;
 
 class IDeviceProgramInput {
+    friend class IDeviceProgram;
 public:
     typedef IDeviceProgramInputSlot Slot;
     enum Schema {
         ChromaPBR
     };
 
-    static IDeviceProgramInput* create(IDevice* device, Schema schema);
-    static void destroy(IDeviceProgramInput* instance);
+    bool is_valid() const noexcept;
+    Schema schema() const noexcept;
+    Slot* slot(const std::string& name) noexcept;
 
-    virtual bool is_valid() const noexcept = 0;
-    virtual bool connect(Slot* slot) noexcept = 0;
-    virtual void disconnect(Slot* slot) noexcept = 0;
-    virtual Schema schema() const noexcept = 0;
-    virtual Slot* slot(const std::string& name) noexcept = 0;
+protected:
+    bool connect(Slot* slot) noexcept;
+    void disconnect(Slot* slot) noexcept;
+
 };
 
 }} // namespace chroma -> device

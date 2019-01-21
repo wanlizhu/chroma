@@ -9,10 +9,9 @@ namespace chroma { namespace device {
 
 class IDevice;
 
-class IDeviceTexture : public IDeviceResource {
+class IDeviceTexture : public DeviceResource {
 public:
-    static IDeviceTexture* create(IDevice* device, math::int2 size_, IDeviceColorFormatID format_);
-    static void destroy(IDeviceTexture* instance);
+
 };
 
 }} // namespace chroma -> device
