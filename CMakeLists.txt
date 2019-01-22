@@ -2,7 +2,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT(chroma)
 
-OPTION(BUILD_DEMO "Build demo applications" ON)
+OPTION(CHROMA_BUILD_EDITOR "Build editor applications" ON)
+OPTION(CHROMA_BUILD_TEST "Build test for all submodules" ON)
+
 SET(CMAKE_CXX_STANDARD 14)
 SET(BUILD_SHARED_LIBS OFF)
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -11,10 +13,9 @@ SET(BUILD_SHARED_ZLIB OFF)
 # ===============================================
 #  Paths
 # ===============================================
-SET(EXTERNAL ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
-SET(COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/src)
+SET(EXTERNALS ${CMAKE_CURRENT_SOURCE_DIR}/externals)
+SET(COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/components)
 SET(TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/tools)
-SET(DEMO ${CMAKE_CURRENT_SOURCE_DIR}/demo)
 SET(ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
 
 # ===============================================
@@ -113,7 +114,7 @@ FUNCTION(LIST_LICENSES OUTPUT MODULES)
     FILE(WRITE ${OUTPUT} "R\"CHROMA__(\n")
     SET(_MODULES ${MODULES} ${ARGN})
     FOREACH(module ${_MODULES})
-        SET(license_path "${EXTERNAL}/${module}/LICENSE")
+        SET(license_path "${EXTERNALS}/${module}/LICENSE")
         GET_FILENAME_COMPONENT(fullname "${license_path}" ABSOLUTE)
         FILE(APPEND ${OUTPUT} "License and copyrights for ${module}:\n\n")
         FILE(READ ${license_path} license)
@@ -127,23 +128,23 @@ ENDFUNCTION(LIST_LICENSES)
 # Sub-projects
 # ===============================================
 # Common to all platforms
-ADD_SUBDIRECTORY(${EXTERNAL}/zlib/chroma)
-ADD_SUBDIRECTORY(${EXTERNAL}/libgtest/chroma)
-ADD_SUBDIRECTORY(${EXTERNAL}/benchmark/chroma)
-ADD_SUBDIRECTORY(${EXTERNAL}/glad/chroma)
-ADD_SUBDIRECTORY(${EXTERNAL}/getopt)
-ADD_SUBDIRECTORY(${EXTERNAL}/jsoncpp)
-ADD_SUBDIRECTORY(${EXTERNAL}/rapidxml)
-ADD_SUBDIRECTORY(${EXTERNAL}/tinyobjloader)
-ADD_SUBDIRECTORY(${EXTERNAL}/openexr/chroma)
+ADD_SUBDIRECTORY(${EXTERNALS}/zlib/chroma)
+ADD_SUBDIRECTORY(${EXTERNALS}/libgtest/chroma)
+ADD_SUBDIRECTORY(${EXTERNALS}/benchmark/chroma)
+ADD_SUBDIRECTORY(${EXTERNALS}/glad/chroma)
+ADD_SUBDIRECTORY(${EXTERNALS}/getopt)
+ADD_SUBDIRECTORY(${EXTERNALS}/jsoncpp)
+ADD_SUBDIRECTORY(${EXTERNALS}/rapidxml)
+ADD_SUBDIRECTORY(${EXTERNALS}/tinyobjloader)
+ADD_SUBDIRECTORY(${EXTERNALS}/openexr/chroma)
 ADD_SUBDIRECTORY(${TOOLS}/resc)
 ADD_SUBDIRECTORY(${COMPONENTS}/global/math)
 ADD_SUBDIRECTORY(${COMPONENTS}/global/utils)
 ADD_SUBDIRECTORY(${COMPONENTS}/libchroma)
-IF(BUILD_DEMO)
-    ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
+IF(CHROMA_BUILD_EDITOR)
+    ADD_SUBDIRECTORY(${EXTERNALS}/glfw/chroma)
     ADD_SUBDIRECTORY(${COMPONENTS}/global/display)
-    ADD_SUBDIRECTORY(${DEMO}/viewer)
+    ADD_SUBDIRECTORY(editor)
 ENDIF()
 
 
