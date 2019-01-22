@@ -14,16 +14,18 @@ namespace chroma { namespace device {
 
 class IDevice : public IDeviceAttribute {
 public:
-    typedef IDeviceBuffer Buffer;
-    typedef IDeviceProgram Program;
-    typedef IDeviceTexture Texture;
+    enum Type {
+        OpenGL,
+        Vulkan,
+    };
 
-    static IDevice* create();
-    static void destroy(IDevice* device);
+    static IDevice* create(Type type_);
+    static void destroy(IDevice* instance);
 
-    virtual void install(IDeviceProgram* program_) noexcept = 0;
+    virtual Type type() const noexcept = 0;
+    virtual DeviceProgram* program() noexcept = 0;
+    virtual void install(DeviceProgram* program_) noexcept = 0;
     virtual void use(const std::string& name) noexcept = 0;
-    virtual IDeviceProgram* program() noexcept = 0;
 };
 
 }} // namespace chroma -> device

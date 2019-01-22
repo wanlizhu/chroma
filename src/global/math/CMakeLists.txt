@@ -35,7 +35,7 @@ INSTALL(DIRECTORY ${PUBLIC_HDR_DIR}/${TARGET} DESTINATION include)
 # ===============================================
 FILE(GLOB_RECURSE TEST_SRCS test/*.cpp)
 ADD_EXECUTABLE(test_${TARGET} ${TEST_SRCS})
-SET_TARGET_PROPERTIES(test_${TARGET} PROPERTIES FOLDER TestAndBenchmark)
+SET_TARGET_PROPERTIES(test_${TARGET} PROPERTIES FOLDER Test)
 TARGET_LINK_LIBRARIES(test_${TARGET} PRIVATE ${TARGET} gtest)
 
 # ===============================================
@@ -43,6 +43,6 @@ TARGET_LINK_LIBRARIES(test_${TARGET} PRIVATE ${TARGET} gtest)
 # ===============================================
 SET(BENCHMARK_SRCS benchmark/benchmark_fast.cpp)
 ADD_EXECUTABLE(benchmark_${TARGET} ${BENCHMARK_SRCS})
-SET_TARGET_PROPERTIES(benchmark_${TARGET} PROPERTIES FOLDER TestAndBenchmark)
+SET_TARGET_PROPERTIES(benchmark_${TARGET} PROPERTIES FOLDER Benchmark)
 TARGET_COMPILE_OPTIONS(benchmark_${TARGET} PRIVATE ${OPTIMIZATION_FLAGS})
 TARGET_LINK_LIBRARIES(benchmark_${TARGET} PRIVATE benchmark_main utils ${TARGET})

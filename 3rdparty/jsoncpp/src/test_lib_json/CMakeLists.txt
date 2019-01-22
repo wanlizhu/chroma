@@ -5,7 +5,7 @@ ADD_EXECUTABLE( jsoncpp_test
                 jsontest.h
                 main.cpp
                 )
-SET_TARGET_PROPERTIES(jsoncpp_test PROPERTIES FOLDER "TestAndBenchmark")
+SET_TARGET_PROPERTIES(jsoncpp_test PROPERTIES FOLDER "Test")
 
 IF(BUILD_SHARED_LIBS)
     ADD_DEFINITIONS( -DJSON_DLL )

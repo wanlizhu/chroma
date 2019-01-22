@@ -3,7 +3,7 @@ FIND_PACKAGE(PythonInterp 2.6)
 ADD_EXECUTABLE(jsoncpp_test_runner
                main.cpp
                )
-SET_TARGET_PROPERTIES(jsoncpp_test_runner PROPERTIES FOLDER "TestAndBenchmark")
+SET_TARGET_PROPERTIES(jsoncpp_test_runner PROPERTIES FOLDER "Test")
 
 IF(BUILD_SHARED_LIBS)
     ADD_DEFINITIONS( -DJSON_DLL )
@@ -24,6 +24,6 @@ IF(PYTHONINTERP_FOUND)
                       )
     ADD_CUSTOM_TARGET(jsoncpp_check DEPENDS jsoncpp_readerwriter_tests)
     
-    SET_TARGET_PROPERTIES(jsoncpp_readerwriter_tests PROPERTIES FOLDER "TestAndBenchmark")
-    SET_TARGET_PROPERTIES(jsoncpp_check PROPERTIES FOLDER "TestAndBenchmark")
+    SET_TARGET_PROPERTIES(jsoncpp_readerwriter_tests PROPERTIES FOLDER "Test")
+    SET_TARGET_PROPERTIES(jsoncpp_check PROPERTIES FOLDER "Test")
 ENDIF()

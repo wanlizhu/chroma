@@ -24,14 +24,12 @@ public:
         Coherent,
     };
 
-    static IDeviceBuffer* create(Type type, IDevice* device, const void* data, size_t size_);
-    static void destroy(IDeviceBuffer* instance);
+    virtual size_t size() const noexcept = 0;
+    virtual IDeviceBuffer::Type type() const noexcept = 0;
 
-    virtual bool is_coherent() const noexcept = 0;
-    virtual bool is_mapped() const noexcept = 0;
-    virtual char* map(Map option) noexcept = 0;
-    virtual void unmap() noexcept = 0;
-    virtual Type type() const noexcept = 0;
+protected:
+    IDeviceBuffer() = default;
+    virtual ~IDeviceBuffer() = default;
 };
 
 }} // namespace chroma -> device 

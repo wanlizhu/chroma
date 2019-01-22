@@ -6,8 +6,30 @@ OPTION(BUILD_DEMO "Build demo applications" ON)
 SET(CMAKE_CXX_STANDARD 14)
 SET(BUILD_SHARED_LIBS OFF)
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+SET(BUILD_SHARED_ZLIB OFF)
 
-IF (WIN32)
+# ===============================================
+#  Paths
+# ===============================================
+SET(EXTERNAL ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
+SET(COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/src)
+SET(TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/tools)
+SET(DEMO ${CMAKE_CURRENT_SOURCE_DIR}/demo)
+SET(ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
+
+# ===============================================
+# General compiler flags
+# ===============================================
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD}")
+
+IF(WIN32)
+    MESSAGE(STATUS "Configurate for Windows")
+    ADD_DEFINITIONS(/W0)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWINDOWS")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES=1 /std:c++14")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
+    
     # Link statically against c/c++ lib to avoid missing redistriburable such as "VCRUNTIME140.dll not found."
     SET(USE_STATIC_CRT ON)
 
@@ -34,32 +56,6 @@ IF (WIN32)
         SET(CRT_FLAGS_RELEASE "/MD")
         SET(CRT_FLAGS_DEBUG "/MDd")
     ENDIF()
-ENDIF()
-
-# ===============================================
-#  Paths
-# ===============================================
-SET(EXTERNAL ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
-SET(LIB_CHROMA ${CMAKE_CURRENT_SOURCE_DIR}/src/libchroma)
-SET(GLOB_COMP ${CMAKE_CURRENT_SOURCE_DIR}/src/global)
-SET(TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/tools)
-SET(DEMO ${CMAKE_CURRENT_SOURCE_DIR}/demo)
-SET(ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
-
-# ===============================================
-# General compiler flags
-# ===============================================
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD}")
-
-IF(WIN32)
-    MESSAGE(STATUS "Configurate for Windows")
-    ADD_DEFINITIONS(/W0)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWINDOWS")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES=1 /std:c++14")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
-    
-    SET(CP_ALL "xcopy /s /e /y ")
 ELSEIF(UNIX AND NOT APPLE)
     MESSAGE(STATUS "Configurate for Linux")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLINUX")
@@ -73,8 +69,6 @@ ELSEIF(UNIX AND NOT APPLE)
     IF(NOT X11_FOUND)
         SET(BUILD_DEMO OFF)
     ENDIF()
-    
-    SET(CP_ALL "cp -rf ")
 ELSEIF(APPLE)
     MESSAGE(STATUS "Configurate for Apple")
     SET(GC_SECTIONS "-Wl,-dead_strip")
@@ -88,8 +82,6 @@ ELSEIF(APPLE)
     # prevents ar from invoking ranlib, let CMake do it
     SET(CMAKE_C_ARCHIVE_CREATE   "<CMAKE_AR> qc -S <TARGET> <LINK_FLAGS> <OBJECTS>")
     SET(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> qc -S <TARGET> <LINK_FLAGS> <OBJECTS>")
-    
-    SET(CP_ALL "cp -rf ")
 ELSE()
     MESSAGE(FATAL_ERROR "Unsupported platform : ${CMAKE_SYSTEM_NAME}")
 ENDIF()
@@ -135,7 +127,7 @@ ENDFUNCTION(LIST_LICENSES)
 # Sub-projects
 # ===============================================
 # Common to all platforms
-ADD_SUBDIRECTORY(${EXTERNAL}/libz/chroma)
+ADD_SUBDIRECTORY(${EXTERNAL}/zlib/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/libgtest/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/benchmark/chroma)
 ADD_SUBDIRECTORY(${EXTERNAL}/glad/chroma)
@@ -143,13 +135,14 @@ ADD_SUBDIRECTORY(${EXTERNAL}/getopt)
 ADD_SUBDIRECTORY(${EXTERNAL}/jsoncpp)
 ADD_SUBDIRECTORY(${EXTERNAL}/rapidxml)
 ADD_SUBDIRECTORY(${EXTERNAL}/tinyobjloader)
+ADD_SUBDIRECTORY(${EXTERNAL}/openexr/chroma)
 ADD_SUBDIRECTORY(${TOOLS}/resc)
-ADD_SUBDIRECTORY(${GLOB_COMP}/math)
-ADD_SUBDIRECTORY(${GLOB_COMP}/utils)
-ADD_SUBDIRECTORY(${LIB_CHROMA})
+ADD_SUBDIRECTORY(${COMPONENTS}/global/math)
+ADD_SUBDIRECTORY(${COMPONENTS}/global/utils)
+ADD_SUBDIRECTORY(${COMPONENTS}/libchroma)
 IF(BUILD_DEMO)
     ADD_SUBDIRECTORY(${EXTERNAL}/glfw/chroma)
-    ADD_SUBDIRECTORY(${GLOB_COMP}/display)
+    ADD_SUBDIRECTORY(${COMPONENTS}/global/display)
     ADD_SUBDIRECTORY(${DEMO}/viewer)
 ENDIF()
 

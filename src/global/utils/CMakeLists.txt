@@ -48,15 +48,15 @@ INSTALL(FILES ${PUBLIC_HDRS} DESTINATION include/${TARGET})
 # ===============================================
 FILE(GLOB_RECURSE TEST_SRCS test/*.cpp)
 ADD_EXECUTABLE(test_${TARGET} ${TEST_SRCS})
-SET_TARGET_PROPERTIES(test_${TARGET} PROPERTIES FOLDER TestAndBenchmark)
+SET_TARGET_PROPERTIES(test_${TARGET} PROPERTIES FOLDER Test)
 TARGET_LINK_LIBRARIES(test_${TARGET} PRIVATE gtest utils math)
 
 # ===============================================
 # Benchmarks
 # ===============================================
 ADD_LIBRARY(benchmark_${TARGET}_callee SHARED benchmark/benchmark_callee.cpp)
-SET_TARGET_PROPERTIES(benchmark_${TARGET}_callee PROPERTIES FOLDER TestAndBenchmark)
+SET_TARGET_PROPERTIES(benchmark_${TARGET}_callee PROPERTIES FOLDER Benchmark)
 FILE(GLOB_RECURSE BENCHMARK_SRCS benchmark/*.cpp)
 ADD_EXECUTABLE(benchmark_${TARGET} ${BENCHMARK_SRCS})
-SET_TARGET_PROPERTIES(benchmark_${TARGET} PROPERTIES FOLDER TestAndBenchmark)
+SET_TARGET_PROPERTIES(benchmark_${TARGET} PROPERTIES FOLDER Benchmark)
 TARGET_LINK_LIBRARIES(benchmark_${TARGET} PRIVATE benchmark_main utils benchmark_${TARGET}_callee)

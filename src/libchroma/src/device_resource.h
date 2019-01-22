@@ -6,7 +6,7 @@
 
 namespace chroma { namespace device {
 
-class DeviceResource : public std::enable_shared_from_this<DeviceResource> {
+class DeviceResource {
 public:
     enum Type {
         UndefinedResource,
