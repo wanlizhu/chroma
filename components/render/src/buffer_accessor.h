@@ -1,7 +1,6 @@
 #ifndef CHROMA_BUFFER_ACCESSOR_H
 #define CHROMA_BUFFER_ACCESSOR_H
 
-#include "idevice_buffer.h"
 #include <type_traits>
 #include <assert.h>
 
