@@ -78,18 +78,18 @@ const char* error(int code) {
 #undef ERROR_STRING
 }
 
-std::vector<VulkanDevice> device_list(VkInstance instance, bool print) {
+std::vector<Device> device_list(VkInstance instance, bool print) {
     std::vector<VkPhysicalDevice> devices;
 
     uint32_t count = 0;
     vkEnumeratePhysicalDevices(instance, &count, nullptr);
-    if (count <= 0) return std::vector<VulkanDevice>();
+    if (count <= 0) return std::vector<Device>();
 
     devices.resize(count);
     VkResult err = vkEnumeratePhysicalDevices(instance, &count, devices.data());
     if (err != VK_SUCCESS) {
         std::cerr << "Failed to enumerate physical devices : " << error(err) << std::endl;
-        return std::vector<VulkanDevice>();
+        return std::vector<Device>();
     }
 
     if (print) {
@@ -107,7 +107,7 @@ std::vector<VulkanDevice> device_list(VkInstance instance, bool print) {
         }
     }
 
-    std::vector<VulkanDevice> res(count);
+    std::vector<Device> res(count);
     for (uint32_t i = 0; i < count; i++) {
         res[i].physical_device = devices[i];
         vkGetPhysicalDeviceProperties(res[i].physical_device, &res[i].props);
