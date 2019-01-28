@@ -40,7 +40,7 @@ TARGET_COMPILE_OPTIONS(${TARGET} PRIVATE
 # Installation
 # ===============================================
 SET(INSTALL_TYPE ARCHIVE)
-INSTALL(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib/${DIST_DIR})
+INSTALL(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib)
 INSTALL(FILES ${PUBLIC_HDRS} DESTINATION include/${TARGET})
 
 # ===============================================

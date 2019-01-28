@@ -1,5 +1,5 @@
-#ifndef CHROMA_UTILS_COMPILER_H
-#define CHROMA_UTILS_COMPILER_H
+#ifndef CHROMA_SYS_COMPILER_H
+#define CHROMA_SYS_COMPILER_H
 
 // compatibility with non-clang compilers...
 #ifndef __has_attribute
@@ -15,19 +15,19 @@
 #endif
 
 #if __has_attribute(visibility)
-#    define UTILS_PUBLIC  __attribute__((visibility("default")))
+#    define SYS_PUBLIC  __attribute__((visibility("default")))
 #else
-#    define UTILS_PUBLIC  
+#    define SYS_PUBLIC  
 #endif
 
 #if __has_attribute(visibility)
 #    ifndef TNT_DEV
-#        define UTILS_PRIVATE __attribute__((visibility("hidden")))
+#        define SYS_PRIVATE __attribute__((visibility("hidden")))
 #    else
-#        define UTILS_PRIVATE
+#        define SYS_PRIVATE
 #    endif
 #else
-#    define UTILS_PRIVATE
+#    define SYS_PRIVATE
 #endif
 
 /*
@@ -35,113 +35,113 @@
  */
 #if __has_builtin(__builtin_expect)
 #   ifdef __cplusplus
-#      define UTILS_LIKELY(exp) (__builtin_expect( !!(exp), true ))
-#      define UTILS_UNLIKELY(exp) (__builtin_expect( !!(exp), false ))
+#      define SYS_LIKELY(exp) (__builtin_expect( !!(exp), true ))
+#      define SYS_UNLIKELY(exp) (__builtin_expect( !!(exp), false ))
 #   else
-#      define UTILS_LIKELY(exp) (__builtin_expect( !!(exp), 1 ))
-#      define UTILS_UNLIKELY(exp) (__builtin_expect( !!(exp), 0 ))
+#      define SYS_LIKELY(exp) (__builtin_expect( !!(exp), 1 ))
+#      define SYS_UNLIKELY(exp) (__builtin_expect( !!(exp), 0 ))
 #   endif
 #else
-#   define UTILS_LIKELY(exp) (exp)
-#   define UTILS_UNLIKELY(exp) (exp)
+#   define SYS_LIKELY(exp) (exp)
+#   define SYS_UNLIKELY(exp) (exp)
 #endif
 
 #if __has_builtin(__builtin_prefetch)
-#   define UTILS_PREFETCH(exp) (__builtin_prefetch(exp))
+#   define SYS_PREFETCH(exp) (__builtin_prefetch(exp))
 #else
-#   define UTILS_PREFETCH(exp)
+#   define SYS_PREFETCH(exp)
 #endif
 
 #if __has_builtin(__builtin_assume)
-#   define UTILS_ASSUME(exp) (__builtin_assume(exp))
+#   define SYS_ASSUME(exp) (__builtin_assume(exp))
 #else
-#   define UTILS_ASSUME(exp)
+#   define SYS_ASSUME(exp)
 #endif
 
 #if (defined(__i386__) || defined(__x86_64__))
-#   define UTILS_HAS_HYPER_THREADING 1  // on x86 we assume we have hyper-threading.
+#   define SYS_HAS_HYPER_THREADING 1  // on x86 we assume we have hyper-threading.
 #else
-#   define UTILS_HAS_HYPER_THREADING 0
+#   define SYS_HAS_HYPER_THREADING 0
 #endif
 
 #if defined(__EMSCRIPTEN__)
-#   define UTILS_HAS_THREADING 0
+#   define SYS_HAS_THREADING 0
 #else
-#   define UTILS_HAS_THREADING 1
+#   define SYS_HAS_THREADING 1
 #endif
 
 #if __has_attribute(noinline)
-#define UTILS_NOINLINE __attribute__((noinline))
+#define SYS_NOINLINE __attribute__((noinline))
 #else
-#define UTILS_NOINLINE
+#define SYS_NOINLINE
 #endif
 
 #if __has_attribute(always_inline)
-#define UTILS_ALWAYS_INLINE __attribute__((always_inline))
+#define SYS_ALWAYS_INLINE __attribute__((always_inline))
 #else
-#define UTILS_ALWAYS_INLINE
+#define SYS_ALWAYS_INLINE
 #endif
 
 #if __has_attribute(pure)
-#define UTILS_PURE __attribute__((pure))
+#define SYS_PURE __attribute__((pure))
 #else
-#define UTILS_PURE
+#define SYS_PURE
 #endif
 
 #if __has_attribute(maybe_unused)
-#define UTILS_UNUSED [[maybe_unused]]
-#define UTILS_UNUSED_IN_RELEASE [[maybe_unused]]
+#define SYS_UNUSED [[maybe_unused]]
+#define SYS_UNUSED_IN_RELEASE [[maybe_unused]]
 #elif __has_attribute(unused)
-#define UTILS_UNUSED __attribute__((unused))
-#define UTILS_UNUSED_IN_RELEASE __attribute__((unused))
+#define SYS_UNUSED __attribute__((unused))
+#define SYS_UNUSED_IN_RELEASE __attribute__((unused))
 #else
-#define UTILS_UNUSED
-#define UTILS_UNUSED_IN_RELEASE
+#define SYS_UNUSED
+#define SYS_UNUSED_IN_RELEASE
 #endif
 
-#define UTILS_RESTRICT __restrict__
+#define SYS_RESTRICT __restrict__
 
 #if __has_feature(cxx_thread_local)
 #   ifdef ANDROID
 #       // Android NDK lies about supporting cxx_thread_local
-#       define UTILS_HAS_FEATURE_CXX_THREAD_LOCAL 0
+#       define SYS_HAS_FEATURE_CXX_THREAD_LOCAL 0
 #   else // ANDROID
-#       define UTILS_HAS_FEATURE_CXX_THREAD_LOCAL 1
+#       define SYS_HAS_FEATURE_CXX_THREAD_LOCAL 1
 #   endif // ANDROID
 #else
-#   define UTILS_HAS_FEATURE_CXX_THREAD_LOCAL 0
+#   define SYS_HAS_FEATURE_CXX_THREAD_LOCAL 0
 #endif
 
 #if __has_feature(cxx_rtti)
-#   define UTILS_HAS_RTTI 1
+#   define SYS_HAS_RTTI 1
 #else
-#   define UTILS_HAS_RTTI 0
+#   define SYS_HAS_RTTI 0
 #endif
 
 #ifdef __ARM_ACLE
 #   include <arm_acle.h>
-#   define UTILS_WAIT_FOR_INTERRUPT()   __wfi()
-#   define UTILS_WAIT_FOR_EVENT()       __wfe()
-#   define UTILS_BROADCAST_EVENT()      __sev()
-#   define UTILS_SIGNAL_EVENT()         __sevl()
-#   define UTILS_PAUSE()                __yield()
-#   define UTILS_PREFETCHW(addr)        __pldx(1, 0, 0, addr)
+#   define SYS_WAIT_FOR_INTERRUPT()   __wfi()
+#   define SYS_WAIT_FOR_EVENT()       __wfe()
+#   define SYS_BROADCAST_EVENT()      __sev()
+#   define SYS_SIGNAL_EVENT()         __sevl()
+#   define SYS_PAUSE()                __yield()
+#   define SYS_PREFETCHW(addr)        __pldx(1, 0, 0, addr)
 #else // !__ARM_ACLE
 #   if (defined(__i386__) || defined(__x86_64__))
-#       define UTILS_X86_PAUSE              {__asm__ __volatile__( "rep; nop" : : : "memory" );}
-#       define UTILS_WAIT_FOR_INTERRUPT()   UTILS_X86_PAUSE
-#       define UTILS_WAIT_FOR_EVENT()       UTILS_X86_PAUSE
-#       define UTILS_BROADCAST_EVENT()
-#       define UTILS_SIGNAL_EVENT()
-#       define UTILS_PAUSE()                UTILS_X86_PAUSE
-#       define UTILS_PREFETCHW(addr)        UTILS_PREFETCH(addr)
+#       define SYS_X86_PAUSE              {__asm__ __volatile__( "rep; nop" : : : "memory" );}
+#       define SYS_WAIT_FOR_INTERRUPT()   SYS_X86_PAUSE
+#       define SYS_WAIT_FOR_EVENT()       SYS_X86_PAUSE
+#       define SYS_BROADCAST_EVENT()
+#       define SYS_SIGNAL_EVENT()
+#       define SYS_PAUSE()                SYS_X86_PAUSE
+#       define SYS_PREFETCHW(addr)        SYS_PREFETCH(addr)
 #   else // !x86
-#       define UTILS_WAIT_FOR_INTERRUPT()
-#       define UTILS_WAIT_FOR_EVENT()
-#       define UTILS_BROADCAST_EVENT()
-#       define UTILS_SIGNAL_EVENT()
-#       define UTILS_PAUSE()
-#       define UTILS_PREFETCHW(addr)        UTILS_PREFETCH(addr)
+#       define SYS_WAIT_FOR_INTERRUPT()
+#       define SYS_WAIT_FOR_EVENT()
+#       define SYS_BROADCAST_EVENT()
+#       define SYS_SIGNAL_EVENT()
+#       define SYS_PAUSE()
+#       define SYS_PREFETCHW(addr)        SYS_PREFETCH(addr)
 #   endif // x86
 #endif // __ARM_ACLE
 
@@ -153,9 +153,9 @@ typedef SSIZE_T ssize_t;
 #endif
 
 #ifdef _MSC_VER
-#   define UTILS_EMPTY_BASES __declspec(empty_bases)
+#   define SYS_EMPTY_BASES __declspec(empty_bases)
 #else
-#   define UTILS_EMPTY_BASES
+#   define SYS_EMPTY_BASES
 #endif
 
 #if defined(WIN32)

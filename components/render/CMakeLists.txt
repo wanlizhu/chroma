@@ -3,75 +3,48 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 PROJECT(render)
 
 SET(TARGET render)
-SET(PUBLIC_HDR_DIR include)
-SET(TARGET_DEPS numeric system glad)
-SET(GENERATION_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
-SET(RESOURCES_BIN_HDR "${GENERATION_DIR}/resources.h")
-SET(RESOURCES_BIN_SRC "${GENERATION_DIR}/resources.cpp")
+SET(PUBLIC_INCLUDE_DIRS include)
+SET(PRIVATE_INCLUDE_DIRS "")
+SET(PUBLIC_LINK_DEPS numeric system glad)
+SET(PRIVATE_LINK_DEPS "")
 
 # ===============================================
 # Sources and headers
 # ===============================================
-FILE(GLOB_RECURSE PUBLIC_HDRS ${PUBLIC_HDR_DIR}/${TARGET}/*.h)
+FILE(GLOB_RECURSE PUBLIC_HDRS ${PUBLIC_INCLUDE_DIRS}/${TARGET}/*.h)
 FILE(GLOB_RECURSE PRIVATE_HDRS src/*.h)
 FILE(GLOB_RECURSE SRCS src/*.cpp)
-FILE(GLOB_RECURSE RES_LIST resources/*)
 
-# Embed the binary resource blob and materials.
-IF(RES_LIST)
-    FILE(MAKE_DIRECTORY ${GENERATION_DIR})
-    
-    ADD_CUSTOM_COMMAND(
-            OUTPUT ${RESOURCES_BIN_HDR}
-            COMMAND resc -o ${RESOURCES_BIN_HDR} "${CMAKE_CURRENT_SOURCE_DIR}/resources"
-            DEPENDS resc
-            COMMENT "Compiling resources folder to '${output_path}'")
-            
-    LIST(APPEND PRIVATE_HDRS ${RESOURCES_BIN_HDR})
-    LIST(APPEND SRCS ${RESOURCES_BIN_SRC})
+# ===============================================
+# Target definition
+# ===============================================
+INCLUDE_DIRECTORIES(${PUBLIC_INCLUDE_DIRS} ${GENERATION_DIR} src)
+
+IF(CHROMA_USE_VULKAN)
+    FIND_PACKAGE(Vulkan REQUIRED)
+    ADD_DEFINITIONS(CHROMA_USE_VULKAN)
+    SET(PRIVATE_INCLUDE_DIRS ${PRIVATE_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS})
+    SET(PRIVATE_LINK_DEPS ${PRIVATE_LINK_DEPS} ${Vulkan_LIBRARIES})
+    FIND_PROGRAM(GLSLANG_VALIDATOR 
+                 NAMES glslangValidator
+                 HINTS "${Vulkan_INCLUDE_DIR}/..")
 ENDIF()
 
-# ===============================================
-# Includes & target definition
-# ===============================================
-# specify where our headers are
-INCLUDE_DIRECTORIES(${PUBLIC_HDR_DIR})
-INCLUDE_DIRECTORIES(${GENERATION_DIR})
-INCLUDE_DIRECTORIES(src)
-
-# we're building a library
 ADD_LIBRARY(${TARGET} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
-TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
-TARGET_LINK_LIBRARIES(${TARGET} PUBLIC ${TARGET_DEPS})
-ADD_DEPENDENCIES(${TARGET} resc)
+TARGET_INCLUDE_DIRECTORIES(${TARGET} 
+                           PUBLIC ${PUBLIC_INCLUDE_DIRS}
+                           PRIVATE ${PRIVATE_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(${TARGET} 
+                           PUBLIC ${PUBLIC_LINK_DEPS}
+                           PRIVATE ${PRIVATE_LINK_DEPS})
 
-# ===============================================
-# Compiler flags
-# ===============================================
-IF(MSVC)
-    SET(OPTIMIZATION_FLAGS /fp:fast)
-ELSE()
-    SET(OPTIMIZATION_FLAGS
-        -ffast-math
-        -ffp-contract=fast
-        -fvisibility=hidden
-        -fvisibility-inlines-hidden
-        -fstrict-vtable-pointers)
-ENDIF()
-
-SET(LINUX_COMPILER_FLAGS -fPIC)
-TARGET_COMPILE_OPTIONS(${TARGET} PRIVATE
-        ${FILAMENT_WARNINGS}
-        $<$<CONFIG:Release>:${OPTIMIZATION_FLAGS}>
-        $<$<AND:$<PLATFORM_ID:Darwin>,$<CONFIG:Release>>:${DARWIN_OPTIMIZATION_FLAGS}>
-        $<$<PLATFORM_ID:Linux>:${LINUX_COMPILER_FLAGS}>)
 
 # ===============================================
 # Installation
 # ===============================================
 SET(INSTALL_TYPE ARCHIVE)
-INSTALL(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib/${DIST_DIR})
-INSTALL(DIRECTORY ${PUBLIC_HDR_DIR}/chroma DESTINATION include)
+INSTALL(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib)
+INSTALL(DIRECTORY ${PUBLIC_INCLUDE_DIRS}/chroma DESTINATION include)
 
 # ===============================================
 # Sub-projects

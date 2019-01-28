@@ -25,5 +25,5 @@ TARGET_LINK_LIBRARIES(${TARGET} PUBLIC ${TARGET_DEPS})
 # ===============================================
 # Installation
 # ===============================================
-INSTALL(TARGETS ${TARGET} ${RUNTIME} DESTINATION bin/${DIST_DIR})
+INSTALL(TARGETS ${TARGET} ${RUNTIME} DESTINATION bin)
 INSTALL(FILES ${PUBLIC_HDRS} DESTINATION include/${TARGET})

@@ -1,9 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT(chroma)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 OPTION(CHROMA_BUILD_EDITOR "Build editor applications" ON)
 OPTION(CHROMA_BUILD_TEST "Build test for all submodules" ON)
+OPTION(CHROMA_USE_VULKAN "Use Vulkan library" ON)
 
 SET(CMAKE_CXX_STANDARD 14)
 SET(BUILD_SHARED_LIBS OFF)
@@ -23,106 +25,33 @@ SET(ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
 # ===============================================
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD}")
 
-IF(WIN32)
-    MESSAGE(STATUS "Configurate for Windows")
-    ADD_DEFINITIONS(/W0)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWINDOWS")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES=1 /std:c++14")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
-    
-    # Link statically against c/c++ lib to avoid missing redistriburable such as "VCRUNTIME140.dll not found."
-    SET(USE_STATIC_CRT ON)
-
-    # CL.EXE will not generate .lib without .def file (or without pragma __declspec(dllexport) in front of each functions).
-    SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
-    # IN RELEASE_WITH_DEBUG_INFO, generate debug info in .obj, no in pdb.
-    SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${CRT_FLAGS_RELEASE} /Z7")
-    SET(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${CRT_FLAGS_RELEASE} /Z7")
-
-    # In RELEASE, also generate PDBs.
-    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${CRT_FLAGS_RELEASE} /Zi")
-    SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${CRT_FLAGS_RELEASE} /Zi")
-
-    # In DEBUG, avoid generating a PDB file which seems to mess with incremental compilation.
-    # Instead generate debug info directly inside obj files.
-    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${CRT_FLAGS_DEBUG} /Z7")
-    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${CRT_FLAGS_DEBUG} /Z7")
-
-    IF (${USE_STATIC_CRT})
-        SET(CRT_FLAGS_RELEASE "/MT")
-        SET(CRT_FLAGS_DEBUG "/MTd")
-    ELSE()
-        SET(CRT_FLAGS_RELEASE "/MD")
-        SET(CRT_FLAGS_DEBUG "/MDd")
-    ENDIF()
-ELSEIF(UNIX AND NOT APPLE)
-    MESSAGE(STATUS "Configurate for Linux")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLINUX")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++14")
-    # To distribute our binaries, we must remove the dependency on libc++ and libgcc.
-    IF (CMAKE_BUILD_TYPE STREQUAL "Release")
-        LINK_LIBRARIES("-static-libgcc -static-libstdc++")
-    ENDIF()
-    
-    FIND_PACKAGE(X11)
-    IF(NOT X11_FOUND)
-        SET(BUILD_DEMO OFF)
-    ENDIF()
-ELSEIF(APPLE)
-    MESSAGE(STATUS "Configurate for Apple")
-    SET(GC_SECTIONS "-Wl,-dead_strip")
-    SET(B_SYMBOLIC_FUNCTIONS "")
-
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAPPLE")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-    # tell ranlib to ignore empty compilation units
-    SET(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols <TARGET>")
-    SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols <TARGET>")
-    # prevents ar from invoking ranlib, let CMake do it
-    SET(CMAKE_C_ARCHIVE_CREATE   "<CMAKE_AR> qc -S <TARGET> <LINK_FLAGS> <OBJECTS>")
-    SET(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> qc -S <TARGET> <LINK_FLAGS> <OBJECTS>")
-ELSE()
-    MESSAGE(FATAL_ERROR "Unsupported platform : ${CMAKE_SYSTEM_NAME}")
-ENDIF()
-
 # ===============================================
 # Project flags
 # ===============================================
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-    SET(CHROMA_DEV true)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCHROMA_DEV")
+    ADD_DEFINITIONS(CHROMA_DEV)
 ENDIF()
 
-# ===============================================
-# Distribution
-# ===============================================
-# choose where to put the objects in the dist folder
-IF (NOT DIST_ARCH)
-    SET(DIST_ARCH x86_64)
+IF(WIN32)
+    MESSAGE(STATUS "Configurate for Windows")
+    ADD_DEFINITIONS(/W0 
+                    WINDOWS 
+                    _CRT_SECURE_NO_WARNINGS
+                    _CRT_NONSTDC_NO_DEPRECATE)
+    SET(CRT_FLAGS_RELEASE "/MT")
+    SET(CRT_FLAGS_DEBUG "/MTd") 
+ELSEIF(UNIX AND NOT APPLE)
+    MESSAGE(STATUS "Configurate for Linux")
+     ADD_DEFINITIONS(LINUX)
+    FIND_PACKAGE(X11 REQUIRED)
+ELSEIF(APPLE)
+    MESSAGE(STATUS "Configurate for Apple")
+    SET(GC_SECTIONS "-Wl,-dead_strip")
+    ADD_DEFINITIONS(APPLE)
+ELSE()
+    MESSAGE(FATAL_ERROR "Unsupported platform : ${CMAKE_SYSTEM_NAME}")
 ENDIF()
 
-IF (NOT DIST_DIR)
-    SET(DIST_DIR "${DIST_ARCH}")
-ENDIF()
-
-# ===============================================
-# Functions
-# ===============================================
-FUNCTION(LIST_LICENSES OUTPUT MODULES)
-    FILE(WRITE ${OUTPUT} "R\"CHROMA__(\n")
-    SET(_MODULES ${MODULES} ${ARGN})
-    FOREACH(module ${_MODULES})
-        SET(license_path "${EXTERNALS}/${module}/LICENSE")
-        GET_FILENAME_COMPONENT(fullname "${license_path}" ABSOLUTE)
-        FILE(APPEND ${OUTPUT} "License and copyrights for ${module}:\n\n")
-        FILE(READ ${license_path} license)
-        FILE(APPEND ${OUTPUT} ${license})
-        FILE(APPEND ${OUTPUT} "\n\n")
-    ENDFOREACH()
-    FILE(APPEND ${OUTPUT} ")CHROMA__\"\n")
-ENDFUNCTION(LIST_LICENSES)
 
 # ===============================================
 # Sub-projects
@@ -158,7 +87,5 @@ MESSAGE(STATUS "  C compiler:                ${CMAKE_C_COMPILER}")
 MESSAGE(STATUS "  C++ compiler:              ${CMAKE_CXX_COMPILER}")
 MESSAGE(STATUS "")
 MESSAGE(STATUS "  Build shared libraries:    ${BUILD_SHARED_LIBS}")
-MESSAGE(STATUS "  File Manager:              Native")
 MESSAGE(STATUS "  Mutex Manager:             C++ STL")
-MESSAGE(STATUS "  NetAccessor:               Native")
-MESSAGE(STATUS "  Graphics API:              OpenGL")
+MESSAGE(STATUS "  Vulkan SDK:                $ENV{VULKAN_SDK}")

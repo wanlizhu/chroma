@@ -1,5 +1,5 @@
-#ifndef CHROMA_UTILS_PROFILER_H
-#define CHROMA_UTILS_PROFILER_H
+#ifndef CHROMA_SYS_PROFILER_H
+#define CHROMA_SYS_PROFILER_H
 
 #include <assert.h>
 #include <stdint.h>
@@ -182,7 +182,7 @@ public:
     }
 
 private:
-    UTILS_UNUSED uint8_t m_ids[EVENT_COUNT] = {};
+    SYS_UNUSED uint8_t m_ids[EVENT_COUNT] = {};
     int m_counters_fd[EVENT_COUNT];
     uint32_t m_enabled_events = 0;
 };

@@ -1,5 +1,5 @@
-#ifndef CHROMA_UTILS_WIN32_STDTYPES_H
-#define CHROMA_UTILS_WIN32_STDTYPES_H
+#ifndef CHROMA_SYS_WIN32_STDTYPES_H
+#define CHROMA_SYS_WIN32_STDTYPES_H
 
 #if defined(WIN32)
 #include <windows.h>

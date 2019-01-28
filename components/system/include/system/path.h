@@ -1,5 +1,5 @@
-#ifndef CHROMA_UTILS_PATH_H
-#define CHROMA_UTILS_PATH_H
+#ifndef CHROMA_SYS_PATH_H
+#define CHROMA_SYS_PATH_H
 
 #include <ostream>
 #include <string>

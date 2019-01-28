@@ -1,5 +1,5 @@
-#ifndef CHROMA_UTILS_STRINGS_H
-#define CHROMA_UTILS_STRINGS_H
+#ifndef CHROMA_SYS_STRINGS_H
+#define CHROMA_SYS_STRINGS_H
 
 #include <assert.h>
 #include <stddef.h>
