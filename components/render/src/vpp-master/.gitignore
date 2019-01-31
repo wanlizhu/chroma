@@ -1,0 +1,4 @@
+build/
+subprojects/*/
+.build-tools.cson
+*.swp

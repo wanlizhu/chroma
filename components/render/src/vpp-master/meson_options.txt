@@ -1,0 +1,3 @@
+option('examples', type: 'boolean', value: 'false')
+option('tests', type: 'boolean', value: 'false')
+option('one_device', type: 'boolean', value: 'false')

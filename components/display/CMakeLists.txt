@@ -4,7 +4,7 @@ PROJECT(display)
 
 SET(TARGET display)
 SET(PUBLIC_HDR_DIR include)
-SET(TARGET_DEPS glfw glad numeric system)
+SET(TARGET_DEPS glfw glad numeric system render)
 
 # ===============================================
 # Sources and headers

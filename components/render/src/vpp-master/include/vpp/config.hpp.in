@@ -1,0 +1,18 @@
+// Copyright (c) 2017 nyorain
+// Distributed under the Boost Software License, Version 1.0.
+// See accompanying file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt
+
+// For more information on vpp configuration, see doc/config.md
+// This file (config.hpp) is automatically generated using cmake for the configuration
+// vpp was built with. Do not change it manually.
+
+#pragma once
+
+#define VPP_VMAJOR @vmajor@
+#define VPP_VMINOR @vminor@
+#define VPP_VPATCH @vpatch@
+#define VPP_VERSION VPP_VMAJOR * 10000u + VPP_VMINOR * 100u + VPP_VPATCH
+
+// If this macro is enabled vpp will only allow one Device instance but nearly all objects
+// will consume one word less memory. For more information see resource.hpp
+#mesondefine VPP_ONE_DEVICE_OPTIMIZATION

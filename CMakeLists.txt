@@ -29,25 +29,25 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD}")
 # Project flags
 # ===============================================
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-    ADD_DEFINITIONS(CHROMA_DEV)
+    ADD_DEFINITIONS(-DCHROMA_DEV)
 ENDIF()
 
 IF(WIN32)
     MESSAGE(STATUS "Configurate for Windows")
     ADD_DEFINITIONS(/W0 
-                    WINDOWS 
-                    _CRT_SECURE_NO_WARNINGS
-                    _CRT_NONSTDC_NO_DEPRECATE)
+                    -DWINDOWS 
+                    -D_CRT_SECURE_NO_WARNINGS
+                    -D_CRT_NONSTDC_NO_DEPRECATE)
     SET(CRT_FLAGS_RELEASE "/MT")
     SET(CRT_FLAGS_DEBUG "/MTd") 
 ELSEIF(UNIX AND NOT APPLE)
     MESSAGE(STATUS "Configurate for Linux")
-     ADD_DEFINITIONS(LINUX)
+     ADD_DEFINITIONS(-DLINUX)
     FIND_PACKAGE(X11 REQUIRED)
 ELSEIF(APPLE)
     MESSAGE(STATUS "Configurate for Apple")
     SET(GC_SECTIONS "-Wl,-dead_strip")
-    ADD_DEFINITIONS(APPLE)
+    ADD_DEFINITIONS(-DAPPLE)
 ELSE()
     MESSAGE(FATAL_ERROR "Unsupported platform : ${CMAKE_SYSTEM_NAME}")
 ENDIF()

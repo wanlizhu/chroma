@@ -11,7 +11,7 @@
 #include <numeric/mat4.h>
 #include <numeric/quat.h>
 
-namespace render { namespace device {
+namespace render { 
 
 typedef int8_t INT8;
 typedef int16_t INT16;
@@ -64,6 +64,6 @@ struct is_device_type {
     static constexpr const bool value = (is_device_scalar<T>::value || is_device_vector<T>::value);
 };
 
-}} // namespace render -> device
+} // namespace render
 
 #endif
