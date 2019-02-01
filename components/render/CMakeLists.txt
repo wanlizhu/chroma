@@ -18,23 +18,19 @@ FILE(GLOB_RECURSE SRCS src/*.cpp)
 # ===============================================
 # Target definition
 # ===============================================
-INCLUDE_DIRECTORIES(${PUBLIC_INCLUDE_DIRS} ${GENERATION_DIR} src)
-
-IF(CHROMA_USE_VULKAN)
-    FIND_PACKAGE(Vulkan REQUIRED)
+FIND_PACKAGE(Vulkan REQUIRED)
+IF(Vulkan_FOUND)
     ADD_DEFINITIONS(-DCHROMA_USE_VULKAN)
-    SET(PRIVATE_INCLUDE_DIRS ${PRIVATE_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS})
-    SET(PRIVATE_LINK_DEPS ${PRIVATE_LINK_DEPS} ${Vulkan_LIBRARIES})
+    SET(PRIVATE_LINK_DEPS ${PRIVATE_LINK_DEPS} Vulkan::Vulkan)
 ENDIF()
 
 ADD_LIBRARY(${TARGET} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
 TARGET_INCLUDE_DIRECTORIES(${TARGET} 
                            PUBLIC ${PUBLIC_INCLUDE_DIRS}
-                           #PRIVATE ${PRIVATE_INCLUDE_DIRS})
-                           PUBLIC ${PRIVATE_INCLUDE_DIRS}) # FOR DEBUG 
+                           PRIVATE ${PRIVATE_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(${TARGET} 
-                           PUBLIC ${PUBLIC_LINK_DEPS}
-                           PRIVATE ${PRIVATE_LINK_DEPS})
+                      PUBLIC ${PUBLIC_LINK_DEPS}
+                      PRIVATE ${PRIVATE_LINK_DEPS})
 
 
 # ===============================================
@@ -42,10 +38,5 @@ TARGET_LINK_LIBRARIES(${TARGET}
 # ===============================================
 SET(INSTALL_TYPE ARCHIVE)
 INSTALL(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib)
-INSTALL(DIRECTORY ${PUBLIC_INCLUDE_DIRS}/chroma DESTINATION include)
+INSTALL(DIRECTORY ${PUBLIC_INCLUDE_DIRS}/${TARGET} DESTINATION include)
 
-# ===============================================
-# Sub-projects
-# ===============================================
-#ADD_SUBDIRECTORY(test)
-#ADD_SUBDIRECTORY(benchmark)

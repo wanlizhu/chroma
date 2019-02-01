@@ -19,7 +19,7 @@ void mk_file(Path &p, const char *str) {
     ::fclose(f);
 };
 
-#ifdef WINDOWS
+#ifdef _WIN32
 
 TEST(PathTest, Constructor) {
     // Ensure the path is canonical

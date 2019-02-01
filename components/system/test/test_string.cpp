@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <system/strings.h>
+#include <system/c_str.h>
 
 using namespace sys;
 
