@@ -1,25 +1,19 @@
 # Chroma
 
-Chroma is a real-time physically based rendering engine for Android, iOS, Linux, macOS, and Windows. It is designed to be as small as possible and as efficient as possible on Android.
-
-Chroma is based on Google's Filament, which is currently used in the
-[Sceneform](https://developers.google.com/ar/develop/java/sceneform/) library both at runtime on
-Android devices and as the renderer inside the Android Studio plugin.
+Chroma is a real-time physically based rendering engine for Windows. It is designed to be as small as possible and as efficient as possible.
 
 ## Features
 
 ### APIs
 
-- Native C++ API for Android, iOS, Linux, macOS and Windows
+- Native C++ API for Windows
 - Java/JNI API for Android, Linux, macOS and Windows
-- JavaScript API
+- Python API
 
 ### Backends
 
-- OpenGL 4.1+ for Linux, macOS and Windows
-- OpenGL ES 3.0+ for Android and iOS
-- Vulkan 1.0 for Android, Linux, macOS and iOS (with MoltenVk), and Windows
-- WebGL 2.0 for all platforms
+- OpenGL 4.1+ for Windows
+- Vulkan 1.0 for Windows
 
 ### Rendering
 
@@ -46,6 +40,7 @@ Android devices and as the renderer inside the Android Studio plugin.
 
 Many other features have been either prototyped or planned:
 
+- Support MacOS and Linux platforms
 - IES light profiles
 - Area lights
 - Fog
