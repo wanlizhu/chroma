@@ -39,18 +39,6 @@ private:
     bool m_state = true;
 };
 
-template<>
-class Adequacy<VkQueueFamilyProperties> {
-public:
-    Adequacy(const VkQueueFamilyProperties& family_properties);
-
-    bool is_satiable() const;
-
-private:
-    const VkQueueFamilyProperties& m_family_properties;
-    bool m_state = true;
-};
-
 }} // namespace render -> vk
 
 #endif

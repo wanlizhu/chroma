@@ -2,6 +2,7 @@
 #define CHROMA_RENDER_VULKAN_VALIDATION_LAYER_H
 
 #include "vulkan_types.h"
+#include <functional>
 
 namespace render { namespace vk {
 

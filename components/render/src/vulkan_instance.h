@@ -20,7 +20,6 @@ public:
 
 public:
     Instance(VkInstance inst);
-    Instance(VkInstanceCreateInfo info);
     Instance(const std::vector<std::string>& extensions,
              const std::vector<std::string>& layers);
     virtual ~Instance();

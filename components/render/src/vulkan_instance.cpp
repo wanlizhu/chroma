@@ -18,7 +18,8 @@ std::vector<std::string> Instance::BASIC_LAYERS = {
 
 Instance::Instance(const std::vector<std::string>& extensions,
                    const std::vector<std::string>& layers) 
-    : ValidationLayer(VK_NULL_HANDLE, layers) {
+    : Properties<VkInstance>(extensions)
+    , ValidationLayer(VK_NULL_HANDLE, layers) {
     if (!Adequacy<VkInstance>().require_extensions(extensions)
                                .require_layers(layers)
                                .is_satiable()) {
@@ -55,22 +56,9 @@ Instance::Instance(const std::vector<std::string>& extensions,
     }
 }
 
-Instance::Instance(VkInstanceCreateInfo info) 
-    : ValidationLayer(VK_NULL_HANDLE) {
-    std::shared_ptr<Instance> self = std::make_shared<Instance>();
-    
-    VkResult res = vkCreateInstance(&info, nullptr, &self->m_instance);
-    if (res != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create Vulkan Instance!!!");
-    }
-
-    if (info.enabledLayerCount > 0) {
-        ValidationLayer::reset(m_instance);
-    }
-}
-
 Instance::Instance(VkInstance inst) 
-    : ValidationLayer(inst)
+    : Properties<VkInstance>({})
+    , ValidationLayer(inst, {})
 {}
 
 Instance::~Instance() {

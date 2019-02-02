@@ -4,6 +4,7 @@
 #include <iostream>
 #include <shared_mutex>
 #include <mutex>
+#include <assert.h>
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugReportCallbackEXT(VkInstance instance,
     const VkDebugReportCallbackCreateInfoEXT* pCreateInfo,

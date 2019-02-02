@@ -16,14 +16,19 @@ FILE(GLOB_RECURSE PRIVATE_HDRS src/*.h)
 FILE(GLOB_RECURSE SRCS src/*.cpp)
 
 # ===============================================
-# Target definition
+# Find Vulkan
 # ===============================================
 FIND_PACKAGE(Vulkan REQUIRED)
-IF(Vulkan_FOUND)
-    ADD_DEFINITIONS(-DCHROMA_USE_VULKAN)
-    SET(PRIVATE_LINK_DEPS ${PRIVATE_LINK_DEPS} Vulkan::Vulkan)
+SET(PRIVATE_LINK_DEPS ${PRIVATE_LINK_DEPS} Vulkan::Vulkan)
+IF(WIN32)
+    ADD_DEFINITIONS(-DVK_USE_PLATFORM_WIN32_KHR 
+                    -DVK_USE_PLATFORM_WIN32_KHX 
+                    -DWIN32_LEAN_AND_MEAN)
 ENDIF()
 
+# ===============================================
+# Target definition
+# ===============================================
 ADD_LIBRARY(${TARGET} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
 TARGET_INCLUDE_DIRECTORIES(${TARGET} 
                            PUBLIC ${PUBLIC_INCLUDE_DIRS}

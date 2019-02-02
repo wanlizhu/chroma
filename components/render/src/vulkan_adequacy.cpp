@@ -4,7 +4,8 @@
 namespace render { namespace vk {
 
 Adequacy<VkInstance>::Adequacy()
-    : m_state(true) 
+    : m_properties({})
+    , m_state(true) 
 {}
 
 Adequacy<VkInstance>& Adequacy<VkInstance>::require_extensions(const std::vector<std::string>& extensions) {
@@ -48,7 +49,13 @@ Adequacy<VkPhysicalDevice>& Adequacy<VkPhysicalDevice>::require_queue_family(VkQ
     if (!m_state)
         return *this;
 
-    
+    Properties<VkPhysicalDevice> properties(m_physical_device);
+    VkQueueFlags supported = 0;
+    for (auto& family : properties.supported_queue_families()) {
+        supported |= family.queueFlags;
+    }
+
+    m_state = (supported & families) == families;
 
     return *this;
 }

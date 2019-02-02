@@ -1,5 +1,6 @@
 #include "vulkan_validation_layer.h"
 #include <sstream>
+#include <iostream>
 
 namespace render { namespace vk {
 

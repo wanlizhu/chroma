@@ -14,7 +14,7 @@
 
 namespace sys {
 
-char** cstr_array(const std::vector<std::string>& strs, StringArrayDeleter* del = nullptr);
+char** cstr_array(const std::vector<std::string>& strs, StringArrayDeleter* del);
 
 }
 #endif 
