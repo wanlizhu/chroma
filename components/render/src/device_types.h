@@ -1,5 +1,5 @@
-#ifndef CHROMA_IDEVICE_BASIC_TYPES_H
-#define CHROMA_IDEVICE_BASIC_TYPES_H
+#ifndef CHROMA_RENDER_DEVICE_TYPES_H
+#define CHROMA_RENDER_DEVICE_TYPES_H
 
 #include <stdint.h>
 #include <numeric/half.h>
